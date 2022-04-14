@@ -68,20 +68,20 @@ class SearchFragment : Fragment() {
     // 拍照识别植物
     private fun searchTakePhoto() {
         // 创建File对象，用于存储拍照后的图片
-        outputImage = File(context?.externalCacheDir,"take_phopo_image.jpg")
-        if (outputImage.exists()) {
-            outputImage.delete()
-        }
-        outputImage.createNewFile()
-        imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            FileProvider.getUriForFile(context!!,"takePhotos",outputImage)
-        } else {
-            Uri.fromFile(outputImage)
-        }
+//        outputImage = File(context?.externalCacheDir,"take_phopo_image.jpg")
+//        if (outputImage.exists()) {
+//            outputImage.delete()
+//        }
+//        outputImage.createNewFile()
+//        imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            FileProvider.getUriForFile(context!!,"takePhotos",outputImage)
+//        } else {
+//            Uri.fromFile(outputImage)
+//        }
         // 启动相机程序
-        val intent = Intent("android.media.action.IMAGE_CAPTURE")
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri)
-        startActivityForResult(intent,takePhoto)
+//        val intent = Intent("android.media.action.IMAGE_CAPTURE")
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri)
+//        startActivityForResult(intent,takePhoto)
 
 
     }
