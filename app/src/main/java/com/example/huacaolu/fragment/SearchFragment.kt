@@ -179,8 +179,6 @@ class SearchFragment : Fragment() {
 
                 }
             }
-        } else {
-
         }
     }
 
@@ -205,7 +203,7 @@ class SearchFragment : Fragment() {
             return
         }
         // 裁剪是耗时操作，需要在子线程中进行，在裁剪完之后需要使用handler去通知其他需要使用裁剪结果的对象，告知结果可使用了。
-        // 一般这种在异步操作，在本类中使用handler，如果是外部需要结果，则使用接口回调，参考MyPopupWindow
+        // 一般这种在异步操作，在本类中使用handler，如果是外部需要结果，则使用接口回调，参考ParsePlant的结果回调
         object : Thread() {
             override fun run() {
                 super.run()
