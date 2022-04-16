@@ -1,5 +1,6 @@
 package com.example.huacaolu.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,6 +27,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import android.app.Activity.RESULT_OK
+import android.graphics.Picture
 import android.widget.Toast
 import com.example.huacaolu.api.ParsePlant
 
@@ -62,7 +64,6 @@ class SearchFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        ParsePlant.plant()
     }
 
     override fun onCreateView(
@@ -151,6 +152,7 @@ class SearchFragment : Fragment() {
         startActivityForResult(intent, TAKE_PHOTO) //打开相机
     }
 
+    @SuppressLint("Range")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode === RESULT_OK) {
@@ -162,17 +164,45 @@ class SearchFragment : Fragment() {
                     )
                     Log.e(TAG, "onActivityResult: imageUri =  $mImageUri")
                     mIvShowImage.setImageBitmap(bitmap)
-                    val base64Bitmap = bitmapToBase64(bitmap)
-//                    distinguishPlant(base64Bitmap)
+                    val filePath = mImageUri.path.toString().replace("/root/","")
+                    Log.e(TAG, "onActivityResult: filePath = $filePath")
+                    ParsePlant.plant(filePath,object : ParsePlant.ParsePlantCallback{
+                        override fun parsePlantSuccess(string: String) {
+                            Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+                        }
+
+                        override fun parsePlantFailure(string: String) {
+                            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+                        }
+                    })
                 }
                 CHOOSE_PHOTO -> {
                     Log.e(TAG, "onActivityResult: ImageUriFromAlbum: ")
                     mImageUri = data?.data!!
-                    val inputStream = context?.contentResolver?.openInputStream(mImageUri)
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    mIvShowImage.setImageBitmap(bitmap)
-                    val base64Bitmap = bitmapToBase64(bitmap)
-//                    distinguishPlant(base64Bitmap)
+                    mImageUri?.apply {
+                        //从系统表中查询指定Uri对应的照片
+                        val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+                        val cursor = context?.contentResolver?.query(mImageUri!!, filePathColumn, null, null, null)
+                        cursor?.moveToFirst()
+                        //获取照片路径
+                        val filePath = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+                        cursor?.close()
+                        val inputStream = context?.contentResolver?.openInputStream(mImageUri)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        mIvShowImage.setImageBitmap(bitmap)
+                        Log.e(TAG, "onActivityResult: filePath = $filePath")
+                        ParsePlant.plant(filePath.toString(),object : ParsePlant.ParsePlantCallback{
+                            override fun parsePlantSuccess(string: String) {
+                                Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+                            }
+
+                            override fun parsePlantFailure(string: String) {
+                                Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+                            }
+
+                        })
+                    }
+
                 }
                 else -> {
 
@@ -183,14 +213,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun bitmapToBase64(bitmap : Bitmap): ByteArray {
-        val baos  = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
-        baos.flush()
-        baos.close()
-        val bitmapBytes = baos.toByteArray()
-        return bitmapBytes
-    }
 
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
         val matrix = Matrix()
