@@ -1,7 +1,9 @@
 package com.example.huacaolu
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,17 +18,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import com.baidu.aip.imageclassify.AipImageClassify
+import org.json.JSONObject
+import java.io.File
+import java.io.OutputStream
 
 
 class FirstActivity : AppCompatActivity() {
     private val TAG = "FragmentActivity"
-    companion object {
-        const val APP_ID = "25964377"
-        const val API_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
-        const val SECRET_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
-    }
-
     private val RESULT_CODE = 0
     // 所需的全部权限
     private val permissions = arrayOf(
@@ -42,7 +42,6 @@ class FirstActivity : AppCompatActivity() {
         if (checkMyPermissions()) {
             requestMyPermissions(permissions, 1)
         }
-        initAPI() // 百度API初始化
         setContentView(R.layout.activity_first)
         initView()
     }
@@ -84,17 +83,7 @@ class FirstActivity : AppCompatActivity() {
         return result == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun initAPI() {
-        // 初始化一个AipImageClassify
-        val client = AipImageClassify(Words.APP_ID, API_KEY, SECRET_KEY)
-        // 可选：设置网络连接参数
-//        client.setConnectionTimeoutInMillis(2000)
-//        client.setSocketTimeoutInMillis(60000)
-        // 调用接口
-//        val path = "test.jpg"
-//        val res: JSONObject = client.objectDetect(path, HashMap<String, String>())
-//        println(res.toString(2))
-    }
+
 
     private fun initView() {
         setTF() // 主页字体
@@ -121,7 +110,7 @@ class FirstActivity : AppCompatActivity() {
         alterDialog.setTitle("打开手机设置权限")
         alterDialog.setMessage("请打开设置权限")
         alterDialog.setPositiveButton("打开", DialogInterface.OnClickListener { dialog, which ->
-            openPermissionConfig()
+            openPermissionSetting()
         })
         alterDialog.setNegativeButton("取消", DialogInterface.OnClickListener { dialog, which -> })
         alterDialog.show()
@@ -130,7 +119,7 @@ class FirstActivity : AppCompatActivity() {
     /**
      * 打开手机设置界面
      */
-    private fun openPermissionConfig() {
+    private fun openPermissionSetting() {
         val intent = Intent()
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
         intent.data = Uri.parse("package:" + this.packageName)
@@ -159,7 +148,11 @@ class FirstActivity : AppCompatActivity() {
                 //相机申请成功
                 Log.e(TAG,"权限申请成功 ")
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-
+                for (permission in permissions) {
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                        showDialog()
+                    }
+                }
                 //权限拒绝
                 Log.e(TAG,"权限申请失败")
                 Toast.makeText(this,"权限申请失败,请前往手机设置打开权限",Toast.LENGTH_SHORT).show()
