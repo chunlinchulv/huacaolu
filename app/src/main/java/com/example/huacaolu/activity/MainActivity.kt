@@ -1,9 +1,11 @@
-package com.example.huacaolu
+package com.example.huacaolu.activity
 
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.huacaolu.ui.DataGenerator
+import com.example.huacaolu.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // 提供自定义的布局添加Tab
         for (i in 0.. 2) {
-            mTabLayout.addTab(mTabLayout.newTab().setCustomView(DataGenerator.getTabView(this,i)))
+            mTabLayout.addTab(mTabLayout.newTab().setCustomView(DataGenerator.getTabView(this, i)))
         }
 
     }

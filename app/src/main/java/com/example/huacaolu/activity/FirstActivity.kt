@@ -1,4 +1,4 @@
-package com.example.huacaolu
+package com.example.huacaolu.activity
 
 import android.Manifest
 import android.app.AlertDialog
@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import com.example.huacaolu.R
 
 
 class FirstActivity : AppCompatActivity() {
@@ -88,7 +89,7 @@ class FirstActivity : AppCompatActivity() {
      */
     private fun startHome() {
         val constraintLayout = findViewById<ConstraintLayout>(R.id.beginDesign)
-        val intent = Intent(this,MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         constraintLayout.setOnClickListener {
             if (checkMyPermissions()) {
                 showDialog()

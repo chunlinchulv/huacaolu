@@ -15,10 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HuaCaoLu">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".FirstActivity"
+            android:name=".activity.FirstActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
