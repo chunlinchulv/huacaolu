@@ -238,7 +238,7 @@ class SearchFragment : Fragment() {
         Log.e(TAG, "通过bitmap获取到的图片大小width: $width height: $height")
         return if (width > 4096 && height > 4096) {
             4096
-        }else if ((height < 15 || width < 15)) {
+        }else if (height < 15 || width < 15) {
             -1
         }else {
             if (width > height) {
