@@ -1,9 +1,7 @@
 package com.example.huacaolu
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,17 +10,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.provider.UserDictionary.Words
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import com.baidu.aip.imageclassify.AipImageClassify
-import org.json.JSONObject
-import java.io.File
-import java.io.OutputStream
 
 
 class FirstActivity : AppCompatActivity() {

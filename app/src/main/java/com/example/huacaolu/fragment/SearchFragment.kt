@@ -46,6 +46,7 @@ class SearchFragment : Fragment() {
     // 拍照识别
     val TAKE_PHOTO = 1
     val CHOOSE_PHOTO = 2
+
     //在注册表中配置的provider
     val FILE_PROVIDER_AUTHORITY = "com.example.huacaolu.fileProvider"
 
@@ -55,7 +56,7 @@ class SearchFragment : Fragment() {
     lateinit var mIvTakePhoto: ImageView
     lateinit var mEtSearch: EditText
 
-    lateinit var client:AipImageClassify
+    lateinit var client: AipImageClassify
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +80,7 @@ class SearchFragment : Fragment() {
         initPopWindow()
 
     }
+
     private fun initAPI() {
         // 初始化一个AipImageClassify
         client = AipImageClassify(APP_ID, API_KEY, SECRET_KEY)
@@ -96,8 +98,8 @@ class SearchFragment : Fragment() {
             val searchText = mEtSearch.text.toString()
             if (!TextUtils.isEmpty(searchText)) {
                 searchPlant(searchText)
-            }else {
-                Toast.makeText(context,"请输入需要查询的花草名", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "请输入需要查询的花草名", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -118,7 +120,7 @@ class SearchFragment : Fragment() {
             }
 
             override fun clickCancel() {
-                Toast.makeText(context, "未选择",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "未选择", Toast.LENGTH_SHORT).show()
             }
         })
         val width = activity?.windowManager?.defaultDisplay?.width
@@ -133,19 +135,19 @@ class SearchFragment : Fragment() {
 
     // 拍照识别植物
     private fun takePhoto() {
-        Toast.makeText(context,"打开相机",Toast.LENGTH_SHORT).show()
-        outputImage = File(context?.externalCacheDir,"take_phopo_image.jpg")
+        Toast.makeText(context, "打开相机", Toast.LENGTH_SHORT).show()
+        outputImage = File(context?.externalCacheDir, "take_phopo_image.jpg")
         if (outputImage.exists()) {
             outputImage.delete()
         }
         outputImage.createNewFile()
         mImageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            FileProvider.getUriForFile(context!!,FILE_PROVIDER_AUTHORITY,outputImage)
+            FileProvider.getUriForFile(context!!, FILE_PROVIDER_AUTHORITY, outputImage)
         } else {
             Uri.fromFile(outputImage)
         }
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE) //打开相机的Intent
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,mImageUri)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
         startActivityForResult(intent, TAKE_PHOTO) //打开相机
     }
 
@@ -168,11 +170,14 @@ class SearchFragment : Fragment() {
             when (requestCode) {
                 TAKE_PHOTO ->
                     try {
-                        val bitmap = BitmapFactory.decodeStream(context?.contentResolver?.openInputStream(mImageUri))
+                        val bitmap = BitmapFactory.decodeStream(
+                            context?.contentResolver?.openInputStream(mImageUri)
+                        )
                         /*如果拍照成功，将Uri用BitmapFactory的decodeStream方法转为Bitmap*/
                         Log.i(TAG, "onActivityResult: imageUri $mImageUri")
                         mIvShowImage.setImageBitmap(bitmap)
-                        val res: JSONObject = client.objectDetect(mImageUri.path, HashMap<String, String>())
+                        val res: JSONObject =
+                            client.objectDetect(mImageUri.path, HashMap<String, String>())
                         println(res.toString(2))
                         Log.e(TAG, "xuwenting" + res.toString(2))
                     } catch (e: FileNotFoundException) {
@@ -197,11 +202,12 @@ class SearchFragment : Fragment() {
 
     private fun rotateIfRequired(bitmap: Bitmap): Bitmap {
         val exif = ExifInterface(outputImage.path)
-        val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL)
+        val orientation =
+            exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap,90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap,180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap,270)
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap, 270)
             else -> bitmap
         }
     }
@@ -209,7 +215,8 @@ class SearchFragment : Fragment() {
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
         val matrix = Matrix()
         matrix.postRotate(degree.toFloat())
-        val rotatedBitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.width,bitmap.height,matrix,true)
+        val rotatedBitmap =
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
         bitmap.recycle() // 将不再使用的Bitmap回收
         return rotatedBitmap
     }
@@ -217,13 +224,14 @@ class SearchFragment : Fragment() {
     // 文字搜索植物
     private fun searchPlant(plant: String) {
         // TODO 获取string 搜索内容展示结果
-        Log.e(TAG,plant)
+        Log.e(TAG, plant)
     }
 
     companion object {
         const val APP_ID = "25964377"
         const val API_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
         const val SECRET_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
+
         @JvmStatic
         fun newInstance(param1: String) =
             SearchFragment().apply {
