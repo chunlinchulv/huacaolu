@@ -78,21 +78,4 @@ public class HttpUtil {
         return result;
     }
 
-    interface Callback {
-        void success();
-        void fail();
-    }
-
-    private Callback callback = new Callback() {
-        @Override
-        public void success() {
-
-        }
-
-        @Override
-        public void fail() {
-
-        }
-    };
-
 }
