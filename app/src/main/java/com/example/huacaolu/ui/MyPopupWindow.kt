@@ -19,8 +19,8 @@ class MyPopupWindow : PopupWindow {
     private var cancelView: TextView? = null
 
 
-    constructor(ctx: Context) : super(ctx) {
-        init(ctx)
+    constructor(context: Context) : super(context) {
+        init(context)
     }
 
     private var callBack: CallBack? = null

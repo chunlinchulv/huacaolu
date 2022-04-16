@@ -40,11 +40,6 @@ class FirstActivity : AppCompatActivity() {
         initView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.e(TAG, "onResume()")
-    }
-
     /**
      * 检查APP是否拥有所需要的权限
      */
@@ -52,7 +47,6 @@ class FirstActivity : AppCompatActivity() {
         var isNeedRequestPermission = false
         for (permission in permissions) {
             val result = checkMyPermission(permission)
-            Log.e(TAG, "相机权限 $permission 检查结果 $result")
             if (!result) {
                 isNeedRequestPermission = true
                 break
