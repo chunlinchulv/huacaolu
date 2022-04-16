@@ -1,5 +1,8 @@
 package com.example.huacaolu.utils;
 
+import android.view.MotionEvent;
+import android.view.View;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -74,4 +77,22 @@ public class HttpUtil {
         System.err.println("result:" + result);
         return result;
     }
+
+    interface Callback {
+        void success();
+        void fail();
+    }
+
+    private Callback callback = new Callback() {
+        @Override
+        public void success() {
+
+        }
+
+        @Override
+        public void fail() {
+
+        }
+    };
+
 }

@@ -1,6 +1,7 @@
 package com.example.huacaolu.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,20 +17,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.baidu.aip.imageclassify.AipImageClassify
 import com.example.huacaolu.R
-import com.example.huacaolu.ui.MyPopupWindow
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
-import android.app.Activity.RESULT_OK
-import android.graphics.Picture
-import android.widget.Toast
 import com.example.huacaolu.api.ParsePlant
+import com.example.huacaolu.ui.MyPopupWindow
+import com.example.huacaolu.utils.HttpUtil
+import java.io.File
 
 
 private const val ARG_PARAM1 = "param1"
@@ -166,15 +162,7 @@ class SearchFragment : Fragment() {
                     mIvShowImage.setImageBitmap(bitmap)
                     val filePath = mImageUri.path.toString().replace("/root/","")
                     Log.e(TAG, "onActivityResult: filePath = $filePath")
-                    ParsePlant.plant(filePath,object : ParsePlant.ParsePlantCallback{
-                        override fun parsePlantSuccess(string: String) {
-                            Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
-                        }
-
-                        override fun parsePlantFailure(string: String) {
-                            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
-                        }
-                    })
+                    ParsePlant.plant(filePath,parsePlantCallback)
                 }
                 CHOOSE_PHOTO -> {
                     Log.e(TAG, "onActivityResult: ImageUriFromAlbum: ")
@@ -191,16 +179,7 @@ class SearchFragment : Fragment() {
                         val bitmap = BitmapFactory.decodeStream(inputStream)
                         mIvShowImage.setImageBitmap(bitmap)
                         Log.e(TAG, "onActivityResult: filePath = $filePath")
-                        ParsePlant.plant(filePath.toString(),object : ParsePlant.ParsePlantCallback{
-                            override fun parsePlantSuccess(string: String) {
-                                Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
-                            }
-
-                            override fun parsePlantFailure(string: String) {
-                                Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
-                            }
-
-                        })
+                        ParsePlant.plant(filePath.toString(),parsePlantCallback)
                     }
 
                 }
@@ -210,6 +189,16 @@ class SearchFragment : Fragment() {
             }
         } else {
 
+        }
+    }
+
+    private val parsePlantCallback: ParsePlant.ParsePlantCallback = object : ParsePlant.ParsePlantCallback {
+        override fun parsePlantSuccess(string: String) {
+            Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+        }
+
+        override fun parsePlantFailure(string: String) {
+            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
         }
     }
 
