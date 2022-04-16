@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.app.Activity.RESULT_OK
 import android.widget.Toast
+import com.example.huacaolu.api.ParsePlant
 
 
 private const val ARG_PARAM1 = "param1"
@@ -64,6 +65,7 @@ class SearchFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        ParsePlant.plant()
     }
 
     override fun onCreateView(
