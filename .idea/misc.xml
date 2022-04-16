@@ -3,14 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/bg_dialog_record_r1.xml" value="0.2365" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/dialog_bg_normal.xml" value="0.2365" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_first.xml" value="0.14628623188405798" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_permissions.xml" value="0.14628623188405798" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/dialog_recording.xml" value="0.24682971014492755" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_explore.xml" value="0.1431159420289855" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_search.xml" value="0.14628623188405798" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/popup_take_photo.xml" value="0.24682971014492755" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/circle_green.xml" value="0.24923076923076923" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/cirle.xml" value="0.22407407407407406" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/ic_launcher_background.xml" value="0.25729166666666664" />
@@ -23,6 +15,13 @@
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_explore.xml" value="0.2359375" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_my_garden.xml" value="0.2359375" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_search.xml" value="0.2" />
+        <entry key="app/src/main/res/drawable/dialog_bg_normal.xml" value="0.1975" />
+        <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_popup_window.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.25" />
       </map>
     </option>
   </component>
