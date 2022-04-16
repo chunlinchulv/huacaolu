@@ -4,11 +4,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
@@ -23,9 +21,8 @@ import com.baidu.aip.imageclassify.AipImageClassify
 import com.example.huacaolu.R
 import com.example.huacaolu.ui.MyPopupWindow
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import android.app.Activity.RESULT_OK
@@ -109,7 +106,7 @@ class SearchFragment : Fragment() {
             mPopupWindow.showPopupWindow(view)
         }
     }
-
+    // 初始化popupWindow
     private fun initPopWindow() {
         mPopupWindow = MyPopupWindow(activity!!)
         mPopupWindow?.setPopupWindowCallBack(object : MyPopupWindow.CallBack {
@@ -129,13 +126,14 @@ class SearchFragment : Fragment() {
         mPopupWindow?.width = width!! - 200
     }
 
+    // 选择图片
     private fun chooseImage() {
-        val openAlbumIntent = Intent(Intent.ACTION_GET_CONTENT)
-        openAlbumIntent.type = "image/*"
-        startActivityForResult(openAlbumIntent, CHOOSE_PHOTO) //打开相册
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        startActivityForResult(intent, CHOOSE_PHOTO)
     }
 
-    // 拍照识别植物
+    // 拍照
     private fun takePhoto() {
         Toast.makeText(context, "打开相机", Toast.LENGTH_SHORT).show()
         outputImage = File(context?.externalCacheDir, "take_phopo_image.jpg")
@@ -153,45 +151,28 @@ class SearchFragment : Fragment() {
         startActivityForResult(intent, TAKE_PHOTO) //打开相机
     }
 
-    private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir: File? = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        var imageFile: File? = null
-        try {
-            imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return imageFile!!
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode === RESULT_OK) {
             when (requestCode) {
-                TAKE_PHOTO ->
-                    try {
-                        val bitmap = BitmapFactory.decodeStream(
-                            context?.contentResolver?.openInputStream(mImageUri)
-                        )
-                        /*如果拍照成功，将Uri用BitmapFactory的decodeStream方法转为Bitmap*/
-                        Log.i(TAG, "onActivityResult: imageUri $mImageUri")
-                        mIvShowImage.setImageBitmap(bitmap)
-                        val res: JSONObject =
-                            client.objectDetect(mImageUri.path, HashMap<String, String>())
-                        println(res.toString(2))
-                        Log.e(TAG, "xuwenting" + res.toString(2))
-                    } catch (e: FileNotFoundException) {
-                        e.printStackTrace()
-                    }
+                TAKE_PHOTO -> {
+                    /*如果拍照成功，将Uri用BitmapFactory的decodeStream方法转为Bitmap*/
+                    val bitmap = BitmapFactory.decodeStream(
+                        context?.contentResolver?.openInputStream(mImageUri)
+                    )
+                    Log.e(TAG, "onActivityResult: imageUri =  $mImageUri")
+                    mIvShowImage.setImageBitmap(bitmap)
+                    val base64Bitmap = bitmapToBase64(bitmap)
+//                    distinguishPlant(base64Bitmap)
+                }
                 CHOOSE_PHOTO -> {
-                    Log.i(TAG, "onActivityResult: ImageUriFromAlbum: ")
-                    val extras = data?.extras
-                    if (extras != null) {
-                        val bitmap: Bitmap = extras.get("data") as Bitmap
-                        mIvShowImage.setImageBitmap(bitmap)
-                    }
+                    Log.e(TAG, "onActivityResult: ImageUriFromAlbum: ")
+                    mImageUri = data?.data!!
+                    val inputStream = context?.contentResolver?.openInputStream(mImageUri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    mIvShowImage.setImageBitmap(bitmap)
+                    val base64Bitmap = bitmapToBase64(bitmap)
+//                    distinguishPlant(base64Bitmap)
                 }
                 else -> {
 
@@ -202,16 +183,13 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun rotateIfRequired(bitmap: Bitmap): Bitmap {
-        val exif = ExifInterface(outputImage.path)
-        val orientation =
-            exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap, 270)
-            else -> bitmap
-        }
+    private fun bitmapToBase64(bitmap : Bitmap): ByteArray {
+        val baos  = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+        baos.flush()
+        baos.close()
+        val bitmapBytes = baos.toByteArray()
+        return bitmapBytes
     }
 
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
