@@ -1,6 +1,5 @@
 package com.example.huacaolu.fragment
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.baidu.aip.imageclassify.AipImageClassify
@@ -30,6 +28,8 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.app.Activity.RESULT_OK
+import android.widget.Toast
 
 
 private const val ARG_PARAM1 = "param1"
@@ -221,7 +221,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        // TODO: Rename and change types and number of parameters
         const val APP_ID = "25964377"
         const val API_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
         const val SECRET_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
