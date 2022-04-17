@@ -23,7 +23,9 @@ import com.baidu.aip.imageclassify.AipImageClassify
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
 import com.example.huacaolu.api.ParsePlant
+import com.example.huacaolu.bean.PlantBean
 import com.example.huacaolu.ui.MyPopupWindow
+import com.google.gson.Gson
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -47,7 +49,7 @@ class SearchFragment : Fragment() {
 
     //在注册表中配置的provider
     val FILE_PROVIDER_AUTHORITY = "com.example.huacaolu.fileProvider"
-
+    lateinit var mImageUri : Uri
     lateinit var mPopupWindow: MyPopupWindow
     lateinit var mIvShowImage: ImageView
     lateinit var mIvSearch: ImageView
@@ -158,7 +160,7 @@ class SearchFragment : Fragment() {
             outputImage.delete()
         }
         outputImage.createNewFile()
-        val mImageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        mImageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(requireContext(), FILE_PROVIDER_AUTHORITY, outputImage)
         } else {
             Uri.fromFile(outputImage)
@@ -172,7 +174,11 @@ class SearchFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode === RESULT_OK) {
             when (requestCode) {
-                TAKE_PHOTO,CHOOSE_PHOTO,CROP_IMAGE -> {
+                TAKE_PHOTO -> {
+                    getImage(mImageUri)
+                }
+                CHOOSE_PHOTO,CROP_IMAGE -> {
+                    Log.e(TAG,"选取图片requestCode =  $requestCode")
                     getImage(data)
                 }
                 else -> {
@@ -180,6 +186,20 @@ class SearchFragment : Fragment() {
                 }
             }
         }
+    }
+
+    /**
+     *  这里是因为某些机型上拍照返回的Intent数据data是空的，(有可能是takePhoto的参数传递有问题)
+     *  所以只能选择拍照时保存的uri作为参数
+     *  但是改参数的path属性会在储存卡前面带上/root/，
+     *  如/root/storage/emulated/0/Android/data/com.example.huacaolu/files/IMG_1650202550208.jpg
+     *  这样的地址在读取数据的时候会造成FileNotFoundException,
+     *  所以需要replace掉/root/
+     */
+    private fun getImage(imageUri : Uri) {
+        val filePath = imageUri.path.toString().replace("/root/","")
+        Log.e(TAG,"拍照返回的照片 filePath =  $filePath")
+        pictureCropping(filePath)
     }
 
     @SuppressLint("Range")
@@ -191,7 +211,7 @@ class SearchFragment : Fragment() {
             cursor?.moveToFirst()
             val filePath = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
             cursor?.close()
-            filePath?.let{pictureCropping(filePath)}
+            filePath?.let{pictureCropping(it)}
         }
     }
 
@@ -267,13 +287,14 @@ class SearchFragment : Fragment() {
     private val parsePlantCallback: ParsePlant.ParsePlantCallback = object : ParsePlant.ParsePlantCallback {
         override fun parsePlantSuccess(string: String) {
             Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+            val plantBean:PlantBean = Gson().fromJson(string, PlantBean::class.java)
+            Log.e(TAG, "onActivityResult: plantBean = ${plantBean.toString()}")
         }
 
         override fun parsePlantFailure(string: String) {
             Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
         }
     }
-
 
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
         val matrix = Matrix()
