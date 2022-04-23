@@ -17,8 +17,10 @@
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_my_garden.xml" value="0.2359375" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_search.xml" value="0.2" />
         <entry key="app/src/main/res/drawable/dialog_bg_normal.xml" value="0.1975" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2045" />
         <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.335" />
         <entry key="app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_popup_window.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.25" />
