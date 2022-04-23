@@ -54,7 +54,7 @@ class MyPopupWindow : PopupWindow {
         }
     }
 
-    fun setPopupWindowCallBack(callBack: CallBack) {
+    fun setPopupWindowCallBackListener(callBack: CallBack) {
         this.callBack = callBack
     }
 

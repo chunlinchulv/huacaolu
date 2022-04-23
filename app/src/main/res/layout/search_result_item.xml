@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp">
+    <TextView
+        android:id="@+id/plant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="植物名称 :"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/plant_name_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="桂花"
+        app:layout_constraintLeft_toRightOf="@id/plant_name"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/plant_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="植物描述 :"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/plant_name" />
+
+    <TextView
+        android:id="@+id/plant_desc_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘"
+        app:layout_constraintLeft_toRightOf="@id/plant_desc"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        app:layout_constraintTop_toBottomOf="@id/plant_name_result" />
+    <TextView
+        android:id="@+id/plant_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="百度百科 :"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/plant_desc_result" />
+
+    <TextView
+        android:id="@+id/plant_url_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="https://www.baidu.com"
+        android:autoLink="web"
+        android:textColor="@drawable/selector_text_press_color"
+        app:layout_constraintLeft_toRightOf="@id/plant_url"
+        app:layout_constraintTop_toBottomOf="@id/plant_desc_result" />
+</androidx.constraintlayout.widget.ConstraintLayout>

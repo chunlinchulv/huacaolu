@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp"
     tools:context=".activity.SearchResultActivity">
 
     <ImageView
@@ -12,70 +11,26 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/start"
+        android:contentDescription="校验数据结果"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa"
+        app:layout_constraintTop_toBottomOf="@id/search_result_Image"/>
+    <ListView
+        android:id="@+id/lv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/line1"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa"
+        app:layout_constraintTop_toBottomOf="@id/lv_result"/>
 
-    <TextView
-        android:id="@+id/plant_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="植物名称 :"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_result_Image" />
-
-    <TextView
-        android:id="@+id/plant_name_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:text="桂花"
-        app:layout_constraintLeft_toRightOf="@id/plant_name"
-        app:layout_constraintTop_toBottomOf="@id/search_result_Image" />
-
-    <TextView
-        android:id="@+id/plant_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="植物描述 :"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/plant_name" />
-
-    <TextView
-        android:id="@+id/plant_desc_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:text="刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林刘顺林"
-        app:layout_constraintLeft_toRightOf="@id/plant_desc"
-        android:maxLines="4"
-        app:layout_constraintTop_toBottomOf="@id/plant_name_result" />
-    <TextView
-        android:id="@+id/plant_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="百度百科 :"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/plant_desc_result" />
-
-    <TextView
-        android:id="@+id/plant_url_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:text="https://刘顺林"
-        android:textColor="#a4e2c6"
-        android:autoLink="web"
-        app:layout_constraintLeft_toRightOf="@id/plant_url"
-        app:layout_constraintTop_toBottomOf="@id/plant_desc_result" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

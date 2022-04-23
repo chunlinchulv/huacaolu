@@ -1,19 +1,21 @@
 package com.example.huacaolu.fragment
 
-import android.os.*
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -22,6 +24,7 @@ import androidx.fragment.app.Fragment
 import com.baidu.aip.imageclassify.AipImageClassify
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
+import com.example.huacaolu.activity.SearchResultActivity
 import com.example.huacaolu.api.ParsePlant
 import com.example.huacaolu.bean.PlantBean
 import com.example.huacaolu.ui.MyPopupWindow
@@ -57,6 +60,7 @@ class SearchFragment : Fragment() {
     lateinit var mEtSearch: EditText
 
     lateinit var client: AipImageClassify
+    lateinit var imageUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,9 +76,9 @@ class SearchFragment : Fragment() {
             when(msg.what){
                 HANDLERCROPIMAGE -> {
                     Log.e(TAG,"Handler what =  ${msg.what} obj = ${msg.obj.toString()}")
-                    val filePath = msg.obj.toString()
+                    imageUrl = msg.obj.toString()
                     Handler(Looper.getMainLooper()).post{
-                        showImage(filePath)
+                        showImage(imageUrl)
                     }
                     ParsePlant.plant(msg.obj.toString(),parsePlantCallback)
                 }
@@ -113,6 +117,7 @@ class SearchFragment : Fragment() {
         mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
         mIvSearch.setOnClickListener {
+            hideKeyBoard()
             val searchText = mEtSearch.text.toString()
             if (!TextUtils.isEmpty(searchText)) {
                 searchPlant(searchText)
@@ -122,13 +127,24 @@ class SearchFragment : Fragment() {
         }
 
         mIvTakePhoto.setOnClickListener {
+            hideKeyBoard()
             mPopupWindow.showPopupWindow(view)
         }
     }
 
+    private fun hideKeyBoard() {
+        val imm :InputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = activity?.window?.peekDecorView()
+        if (view != null) {
+            imm.hideSoftInputFromWindow(view.windowToken,0)
+        }
+    }
+
+
+
     private fun initPopWindow() {
         mPopupWindow = MyPopupWindow(requireContext())
-        mPopupWindow.setPopupWindowCallBack(object : MyPopupWindow.CallBack {
+        mPopupWindow.setPopupWindowCallBackListener(object : MyPopupWindow.CallBack {
             override fun clickTakePhoto() {
                 takePhoto()
             }
@@ -237,12 +253,16 @@ class SearchFragment : Fragment() {
                     bitmap.compress(Bitmap.CompressFormat.JPEG,10,outputStream)
                     outputStream.flush()
                     outputStream.close()
+                    if (TextUtils.isEmpty(file.path.toString())) {
+                        Log.e(TAG,"图片裁剪失败，请重新尝试")
+                        return
+                    }
                     val message = mHandler.obtainMessage()
                     message.what = HANDLERCROPIMAGE
                     message.obj = file.path.toString()
                     mHandler.handleMessage(message)
                 }catch (e : IOException){
-                    Toast.makeText(requireContext(),"裁剪图片异常，请重试",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),"图片裁剪失败，请重新尝试",Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -287,13 +307,24 @@ class SearchFragment : Fragment() {
     private val parsePlantCallback: ParsePlant.ParsePlantCallback = object : ParsePlant.ParsePlantCallback {
         override fun parsePlantSuccess(string: String) {
             Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
-            val plantBean:PlantBean = Gson().fromJson(string, PlantBean::class.java)
-            Log.e(TAG, "onActivityResult: plantBean = ${plantBean.toString()}")
+            val plantBean= Gson().fromJson(string, PlantBean::class.java)
+            if (plantBean.getResult() == null || plantBean.getResult()!!.size == 0) {
+                Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
+                return
+            }
+            startSearchResultActivity(string)
         }
 
         override fun parsePlantFailure(string: String) {
             Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
         }
+    }
+
+    private fun startSearchResultActivity(jsonString: String) {
+        val intent = Intent(requireContext(), SearchResultActivity::class.java)
+        intent.putExtra("jsonString",jsonString)
+        intent.putExtra("imageUrl",imageUrl)
+        startActivity(intent)
     }
 
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {

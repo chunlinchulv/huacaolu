@@ -1,8 +1,15 @@
 package com.example.huacaolu.bean
 
-class PlantBean {
+import android.os.Parcel
+import android.os.Parcelable
+
+class PlantBean() : Parcelable {
     private var log_id: Long = 0
-    private var result: List<ResultDTO?>? = null
+    private var result: ArrayList<ResultDTO?>? = null
+
+    constructor(parcel: Parcel) : this() {
+        log_id = parcel.readLong()
+    }
 
     fun getLog_id(): Long {
         return log_id
@@ -12,11 +19,11 @@ class PlantBean {
         this.log_id = log_id
     }
 
-    fun getResult(): List<ResultDTO?>? {
+    fun getResult(): ArrayList<ResultDTO?>? {
         return result
     }
 
-    fun setResult(result: List<ResultDTO?>?) {
+    fun setResult(result: ArrayList<ResultDTO?>?) {
         this.result = result
     }
 
@@ -24,16 +31,46 @@ class PlantBean {
         return "PlantBean(log_id=$log_id, result=${result.toString()})"
     }
 
-    class ResultDTO {
+    class ResultDTO() : Parcelable{
         var score = 0.0
         var name: String? = null
         var baike_info: BaikeInfoDTO? = null
 
-        class BaikeInfoDTO {
+        constructor(parcel: Parcel) : this() {
+            score = parcel.readDouble()
+            name = parcel.readString()
+        }
+
+        class BaikeInfoDTO() : Parcelable{
             var baike_url: String? = null
             var description: String? = null
+
+            constructor(parcel: Parcel) : this() {
+                baike_url = parcel.readString()
+                description = parcel.readString()
+            }
+
             override fun toString(): String {
                 return "BaikeInfoDTO(baike_url=$baike_url, description=$description)"
+            }
+
+            override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(baike_url)
+                parcel.writeString(description)
+            }
+
+            override fun describeContents(): Int {
+                return 0
+            }
+
+            companion object CREATOR : Parcelable.Creator<BaikeInfoDTO> {
+                override fun createFromParcel(parcel: Parcel): BaikeInfoDTO {
+                    return BaikeInfoDTO(parcel)
+                }
+
+                override fun newArray(size: Int): Array<BaikeInfoDTO?> {
+                    return arrayOfNulls(size)
+                }
             }
 
         }
@@ -42,6 +79,43 @@ class PlantBean {
             return "ResultDTO(score=$score, name=$name, baike_info=${baike_info.toString()})"
         }
 
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeDouble(score)
+            parcel.writeString(name)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<ResultDTO> {
+            override fun createFromParcel(parcel: Parcel): ResultDTO {
+                return ResultDTO(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ResultDTO?> {
+                return arrayOfNulls(size)
+            }
+        }
+
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(log_id)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<PlantBean> {
+        override fun createFromParcel(parcel: Parcel): PlantBean {
+            return PlantBean(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PlantBean?> {
+            return arrayOfNulls(size)
+        }
     }
 
 

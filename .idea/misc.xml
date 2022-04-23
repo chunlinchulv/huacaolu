@@ -3,7 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/dialog_bg_normal.xml" value="0.253" />
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/selector_text_press_color.xml" value="0.253" />
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_search_result.xml" value="0.3234375" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.3098958333333333" />
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/dialog_popup_window.xml" value="0.259375" />
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_search.xml" value="0.20833333333333334" />
+        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/search_result_item.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/circle_green.xml" value="0.24923076923076923" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/cirle.xml" value="0.22407407407407406" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/drawable/ic_launcher_background.xml" value="0.25729166666666664" />
@@ -17,10 +23,8 @@
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_my_garden.xml" value="0.2359375" />
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_search.xml" value="0.2" />
         <entry key="app/src/main/res/drawable/dialog_bg_normal.xml" value="0.1975" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2045" />
         <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.335" />
         <entry key="app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_popup_window.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.25" />
