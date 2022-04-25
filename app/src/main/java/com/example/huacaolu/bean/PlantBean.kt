@@ -43,19 +43,22 @@ class PlantBean() : Parcelable {
 
         class BaikeInfoDTO() : Parcelable{
             var baike_url: String? = null
+            var image_url: String? = null
             var description: String? = null
 
             constructor(parcel: Parcel) : this() {
                 baike_url = parcel.readString()
+                image_url = parcel.readString()
                 description = parcel.readString()
             }
 
             override fun toString(): String {
-                return "BaikeInfoDTO(baike_url=$baike_url, description=$description)"
+                return "BaikeInfoDTO(baike_url=$baike_url,image_url = $image_url, description=$description)"
             }
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(baike_url)
+                parcel.writeString(image_url)
                 parcel.writeString(description)
             }
 

@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HuaCaoLu">
         <activity
+            android:name=".activity.SearchResultDetails"
+            android:exported="false" />
+        <activity
             android:name=".activity.SearchResultActivity"
             android:exported="false" />
         <activity

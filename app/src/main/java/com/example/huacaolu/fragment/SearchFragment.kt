@@ -36,7 +36,7 @@ import java.io.IOException
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
 
     private val TAG = "SearchFragment"
     private var param1: String? = null
@@ -61,6 +61,7 @@ class SearchFragment : Fragment() {
 
     lateinit var client: AipImageClassify
     lateinit var imageUrl: String
+    lateinit var parsePlantApi : ParsePlant
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,11 +81,15 @@ class SearchFragment : Fragment() {
                     Handler(Looper.getMainLooper()).post{
                         showImage(imageUrl)
                     }
-                    ParsePlant.plant(msg.obj.toString(),parsePlantCallback)
+//                    parsePlantApi.parsePlantByHttp(imageUrl)
+//                    parsePlantApi.parsePlantByLocalPath(imageUrl)
+                    getResult(parsePlantApi.parsePlantByByte(imageUrl))
                 }
             }
         }
     }
+
+
 
     private fun showImage(filePath: String) {
         Glide.with(requireContext()).load(filePath).centerCrop().into(mIvShowImage)
@@ -99,15 +104,14 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAPI()
+        initApi()
         initView(view)
         initPopWindow()
     }
 
-    private fun initAPI() {
-        client = AipImageClassify(APP_ID, API_KEY, SECRET_KEY)
-        client.setConnectionTimeoutInMillis(2000)
-        client.setSocketTimeoutInMillis(60000)
+    private fun initApi() {
+        parsePlantApi = ParsePlant()
+        parsePlantApi.setApiListener(this)
     }
 
     private fun initView(view: View) {
@@ -304,22 +308,6 @@ class SearchFragment : Fragment() {
         startActivityForResult(intent, CROP_IMAGE);
     }
 
-    private val parsePlantCallback: ParsePlant.ParsePlantCallback = object : ParsePlant.ParsePlantCallback {
-        override fun parsePlantSuccess(string: String) {
-            Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
-            val plantBean= Gson().fromJson(string, PlantBean::class.java)
-            if (plantBean.getResult() == null || plantBean.getResult()!!.size == 0) {
-                Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
-                return
-            }
-            startSearchResultActivity(string)
-        }
-
-        override fun parsePlantFailure(string: String) {
-            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
-        }
-    }
-
     private fun startSearchResultActivity(jsonString: String) {
         val intent = Intent(requireContext(), SearchResultActivity::class.java)
         intent.putExtra("jsonString",jsonString)
@@ -343,9 +331,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val APP_ID = "25964377"
-        const val API_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
-        const val SECRET_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
+
 
         @JvmStatic
         fun newInstance(param1: String) =
@@ -355,6 +341,24 @@ class SearchFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    private fun getResult(jsonString: String) {
+        val plantBean= Gson().fromJson(jsonString, PlantBean::class.java)
+        if (plantBean.getResult() == null || plantBean.getResult()!!.size == 0) {
+            Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
+            return
+        }
+        startSearchResultActivity(jsonString)
+    }
+
+    override fun parsePlantSuccess(string: String) {
+        Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+        getResult(string)
+    }
+
+    override fun parsePlantFailure(string: String) {
+        Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
     }
 
 }

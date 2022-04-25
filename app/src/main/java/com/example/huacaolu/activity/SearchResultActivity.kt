@@ -1,10 +1,10 @@
 package com.example.huacaolu.activity
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.ListView
@@ -43,8 +43,15 @@ class SearchResultActivity : AppCompatActivity() {
         lvResult.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             Log.e(TAG, "onItemClickListener $position")
             val data = dataList?.get(position)
-            data?.name?.let { Log.e(TAG, it) }
+            data?.let { startActivityDetails(it) }
         }
         ivResultPlant.setImageBitmap(BitmapFactory.decodeFile(imageUrl))
+    }
+
+    private fun startActivityDetails(resultDTO: PlantBean.ResultDTO) {
+        val intent = Intent(this, SearchResultDetails::class.java)
+        intent.putExtra("jsonString",Gson().toJson(resultDTO))
+        intent.putExtra("imageUrl",imageUrl)
+        startActivity(intent)
     }
 }

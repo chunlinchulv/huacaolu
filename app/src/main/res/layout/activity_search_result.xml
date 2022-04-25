@@ -14,7 +14,8 @@
         android:contentDescription="校验数据结果"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
     <View
         android:id="@+id/line1"
         android:layout_width="match_parent"
