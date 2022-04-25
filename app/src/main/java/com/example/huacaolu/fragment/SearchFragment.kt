@@ -25,6 +25,7 @@ import com.baidu.aip.imageclassify.AipImageClassify
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
 import com.example.huacaolu.activity.SearchResultActivity
+import com.example.huacaolu.activity.SearchResultDetails
 import com.example.huacaolu.api.ParsePlant
 import com.example.huacaolu.bean.PlantBean
 import com.example.huacaolu.ui.MyPopupWindow
@@ -343,17 +344,37 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     }
 
     private fun getResult(jsonString: String) {
-        val plantBean= Gson().fromJson(jsonString, PlantBean::class.java)
-        val result = plantBean.getResult()
-        if (result == null || result.size == 0) {
+        val plantBean = Gson().fromJson(jsonString, PlantBean::class.java)
+        val results = plantBean.getResult()
+        if (results == null || results.size == 0) {
             Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
             return
         }
-        if (result[0]?.baike_info == null || TextUtils.equals("非植物",result[0]?.name)) {
-            Toast.makeText(requireContext(),"${result[0]?.name} 请重试 ",Toast.LENGTH_SHORT).show()
+        if (results[0]?.baike_info == null || TextUtils.equals("非植物",results[0]?.name)) {
+            Toast.makeText(requireContext(),"${results[0]?.name} 请重试 ",Toast.LENGTH_SHORT).show()
             return
         }
-        startSearchResultActivity(jsonString)
+        val dataPlantBean : PlantBean = PlantBean()
+        val resultArrayList : ArrayList<PlantBean.ResultDTO?> = arrayListOf<PlantBean.ResultDTO?>()
+        for (data : PlantBean.ResultDTO? in results) {
+            if (data?.score!! > 0.5 ) {
+                resultArrayList.add(data)
+            }
+        }
+        dataPlantBean.setLog_id(plantBean.getLog_id())
+        dataPlantBean.setResult(resultArrayList)
+        if (resultArrayList.size == 1) {
+            startActivityDetails(resultArrayList[0]!!)
+        }else {
+            startSearchResultActivity(Gson().toJson(dataPlantBean))
+        }
+    }
+
+    private fun startActivityDetails(resultDTO: PlantBean.ResultDTO) {
+        val intent = Intent(requireContext(), SearchResultDetails::class.java)
+        intent.putExtra("jsonString",Gson().toJson(resultDTO))
+        intent.putExtra("imageUrl",imageUrl)
+        startActivity(intent)
     }
 
     override fun parsePlantSuccess(string: String) {
