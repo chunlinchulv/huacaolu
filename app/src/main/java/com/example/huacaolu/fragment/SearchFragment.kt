@@ -80,10 +80,11 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
                     imageUrl = msg.obj.toString()
                     Handler(Looper.getMainLooper()).post{
                         showImage(imageUrl)
-                    }
 //                    parsePlantApi.parsePlantByHttp(imageUrl)
 //                    parsePlantApi.parsePlantByLocalPath(imageUrl)
-                    getResult(parsePlantApi.parsePlantByByte(imageUrl))
+                        parsePlantApi.parsePlantByByte(imageUrl)
+                    }
+
                 }
             }
         }
@@ -331,8 +332,6 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     }
 
     companion object {
-
-
         @JvmStatic
         fun newInstance(param1: String) =
             SearchFragment().apply {
@@ -345,8 +344,13 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
 
     private fun getResult(jsonString: String) {
         val plantBean= Gson().fromJson(jsonString, PlantBean::class.java)
-        if (plantBean.getResult() == null || plantBean.getResult()!!.size == 0) {
+        val result = plantBean.getResult()
+        if (result == null || result.size == 0) {
             Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (result[0]?.baike_info == null || TextUtils.equals("非植物",result[0]?.name)) {
+            Toast.makeText(requireContext(),"${result[0]?.name} 请重试 ",Toast.LENGTH_SHORT).show()
             return
         }
         startSearchResultActivity(jsonString)
@@ -354,11 +358,16 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
 
     override fun parsePlantSuccess(string: String) {
         Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
-        getResult(string)
+        // Toast需要在主线程弹
+        Handler(Looper.getMainLooper()).post {
+            getResult(string)
+        }
     }
 
     override fun parsePlantFailure(string: String) {
-        Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+        Handler(Looper.getMainLooper()).post {
+            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+        }
     }
 
 }

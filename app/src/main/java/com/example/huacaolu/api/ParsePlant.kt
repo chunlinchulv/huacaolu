@@ -1,12 +1,14 @@
 package com.example.huacaolu.api
 
-import android.util.Log
+import com.baidu.aip.error.AipError
 import com.baidu.aip.imageclassify.AipImageClassify
+import com.baidu.aip.util.Util
 import com.example.huacaolu.utils.Base64Util
 import com.example.huacaolu.utils.FileUtil
 import com.example.huacaolu.utils.HttpUtil
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -36,14 +38,40 @@ class ParsePlant {
 
         }
     }
+
     fun parsePlantByLocalPath(path : String){
         // 调用接口
-        val res = client!!.objectDetect(path, HashMap())
+        object : Thread(){
+            override fun run() {
+                super.run()
+                try {
+                    val data = Util.readFileByBytes(path)
+                    val result = client!!.objectDetect(data, HashMap())
+                    listener.parsePlantSuccess(result.toString())
+                }catch (e: IOException){
+                    e.printStackTrace()
+                    listener.parsePlantFailure( AipError.IMAGE_READ_ERROR.toJsonResult().toString())
+                }
+
+            }
+        }.start()
     }
 
-    fun parsePlantByByte(path : String):String {
-        val result = client!!.plantDetect(path, options)
-        return result.toString()
+    fun parsePlantByByte(path : String) {
+        object : Thread(){
+            override fun run() {
+                super.run()
+                try {
+                    val data = Util.readFileByBytes(path)
+                    val result = client!!.plantDetect(data, options)
+                    listener.parsePlantSuccess(result.toString())
+                }catch (e: IOException){
+                    e.printStackTrace()
+                    listener.parsePlantFailure( AipError.IMAGE_READ_ERROR.toJsonResult().toString())
+                }
+
+            }
+        }.start()
     }
 
     fun parsePlantByHttp(filePath : String) {
@@ -74,7 +102,6 @@ class ParsePlant {
                 }
             }
         }.start()
-
     }
 
     fun getAuth(ak: String, sk: String) {
