@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SearchResultDetails"
-    android:orientation="vertical">
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="26dp"/>
+    android:orientation="vertical"
+    tools:context=".activity.SearchResultDetails">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#eeeeee"
         android:layout_gravity="center"
-        android:gravity="center">
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
         <ImageButton
             android:id="@+id/iv_back"
             android:layout_width="20dp"
@@ -22,48 +23,43 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/back"
-            android:visibility="gone"/>
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="43dp"
-            android:text="标题"
-            android:gravity="center"/>
-    </LinearLayout>
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="标题" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="20dp">
         <ImageView
             android:id="@+id/search_result_Image"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/start"
-            android:layout_gravity="center"/>
+            android:src="@drawable/start" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp">
 
         <TextView
             android:id="@+id/plant_desc_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintLeft_toRightOf="@id/plant_desc"
-            android:scrollHorizontally="true"
             android:marqueeRepeatLimit="marquee_forever"
-            app:layout_constraintTop_toBottomOf="@id/plant_name_result" />
-        <TextView
-            android:id="@+id/plant_url_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:autoLink="web"
-            android:textColor="@drawable/selector_text_press_color"
-            app:layout_constraintLeft_toRightOf="@id/plant_url"
-            app:layout_constraintTop_toBottomOf="@id/plant_desc_result" />
-    </LinearLayout>
+            android:scrollHorizontally="true"
+            android:text="描述" />
+    </ScrollView>
 
+    <TextView
+        android:id="@+id/plant_url_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:autoLink="web"
+        android:textColor="@drawable/selector_text_press_color"/>
 </LinearLayout>

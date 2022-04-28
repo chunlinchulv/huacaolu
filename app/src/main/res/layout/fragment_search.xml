@@ -14,8 +14,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="#88ffffff"
-        app:layout_constraintTop_toTopOf="parent"
-         />
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/search_find_text"
         android:text="@string/find_plant_text"
