@@ -28,6 +28,7 @@
         <entry key="app/src/main/res/drawable/selector_text_press_color.xml" value="0.2095" />
         <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.33967391304347827" />
         <entry key="app/src/main/res/layout/activity_search_result_details.xml" value="0.33489583333333334" />
         <entry key="app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_popup_window.xml" value="0.25" />
