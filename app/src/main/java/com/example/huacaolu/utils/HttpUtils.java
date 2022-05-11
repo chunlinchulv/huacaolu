@@ -2,7 +2,10 @@ package com.example.huacaolu.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,9 @@ public class HttpUtils {
                                       Map<String, String> bodys)
             throws Exception {
         HttpClient httpClient = wrapClient(host);
+        if (httpClient == null){
+            return null;
+        }
 
         HttpPost request = new HttpPost(buildUrl(host, path, querys));
         for (Map.Entry<String, String> e : headers.entrySet()) {
@@ -276,36 +282,36 @@ public class HttpUtils {
     private static HttpClient wrapClient(String host) {
         HttpClient httpClient = new DefaultHttpClient();
         if (host.startsWith("https://")) {
-            sslClient(httpClient);
+            try {
+                sslClient(httpClient);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         return httpClient;
     }
 
-    private static void sslClient(HttpClient httpClient) {
-        try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            X509TrustManager tm = new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-                public void checkClientTrusted(X509Certificate[] xcs, String str) {
+    private static void sslClient(HttpClient httpClient) throws Exception {
 
-                }
-                public void checkServerTrusted(X509Certificate[] xcs, String str) {
+        X509TrustManager tm = new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+            public void checkClientTrusted(X509Certificate[] xcs, String str) {
 
-                }
-            };
-            ctx.init(null, new TrustManager[] { tm }, null);
-            SSLSocketFactory ssf = new SSLSocketFactory(ctx);
-            ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            ClientConnectionManager ccm = httpClient.getConnectionManager();
-            SchemeRegistry registry = ccm.getSchemeRegistry();
-            registry.register(new Scheme("https", 443, ssf));
-        } catch (KeyManagementException ex) {
-            throw new RuntimeException(ex);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException(ex);
-        }
+            }
+            public void checkServerTrusted(X509Certificate[] xcs, String str) {
+
+            }
+        };
+        KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+        SSLSocketFactory ssf = new SSLSocketFactory(store);
+        ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        ClientConnectionManager ccm = httpClient.getConnectionManager();
+        SchemeRegistry registry = ccm.getSchemeRegistry();
+        registry.register(new Scheme("https", ssf, 443));
+
     }
 }

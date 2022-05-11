@@ -329,7 +329,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     // 文字搜索植物
     private fun searchPlant(plant: String) {
         // TODO 获取string 搜索内容展示结果
-
+        parsePlantApi.parsePlantWithWords(plant)
     }
 
     companion object {

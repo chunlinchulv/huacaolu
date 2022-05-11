@@ -1,11 +1,15 @@
 package com.example.huacaolu.api
 
+import android.util.Log
 import com.baidu.aip.error.AipError
 import com.baidu.aip.imageclassify.AipImageClassify
 import com.baidu.aip.util.Util
 import com.example.huacaolu.utils.Base64Util
 import com.example.huacaolu.utils.FileUtil
 import com.example.huacaolu.utils.HttpUtil
+import com.example.huacaolu.utils.HttpUtils
+import org.apache.http.HttpResponse
+import org.apache.http.util.EntityUtils
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -13,7 +17,6 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-import java.net.http.HttpResponse
 
 
 
@@ -159,6 +162,7 @@ class ParsePlant {
     }
 
     fun parsePlantWithWords(plantName:String) {
+        Log.e("xxx plantName = " , plantName)
         val host = "https://baike.market.alicloudapi.com"
         val path = "/baike"
         val method = "POST"
@@ -170,7 +174,7 @@ class ParsePlant {
         headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
         val querys: Map<String, String> = HashMap()
         val bodys: MutableMap<String, String> = HashMap()
-        bodys["src"] = "乔布斯"
+        bodys["src"] = plantName
 
 
         try {
@@ -182,12 +186,20 @@ class ParsePlant {
              *
              * 相应的依赖请参照
              * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
-             */
+             * */
+
             val response: HttpResponse =
                 HttpUtils.doPost(host, path, method, headers, querys, bodys)
+            if (response == null) {
+                listener.parsePlantFailure("");
+            }else{
+                listener.parsePlantSuccess(EntityUtils.toString(response.entity))
+            }
             println(response.toString())
             //获取response的body
-            //System.out.println(EntityUtils.toString(response.getEntity()));
+            println(EntityUtils.toString(response.entity))
+            Log.e("xxx response = " , response.toString())
+            Log.e("xxx EntityUtils = " , EntityUtils.toString(response.entity))
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
