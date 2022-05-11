@@ -13,6 +13,10 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import java.net.http.HttpResponse
+
+
+
 
 
 class ParsePlant {
@@ -152,6 +156,41 @@ class ParsePlant {
 
     fun setApiListener(listener : ParsePlantApiListener){
         this.listener = listener
+    }
+
+    fun parsePlantWithWords(plantName:String) {
+        val host = "https://baike.market.alicloudapi.com"
+        val path = "/baike"
+        val method = "POST"
+        val appcode = "33599eb7c1674e9685e0daec0ac2b0da"
+        val headers: MutableMap<String, String> = HashMap()
+        headers["Authorization"] = "APPCODE $appcode"
+        //根据API的要求，定义相对应的Content-Type
+        //根据API的要求，定义相对应的Content-Type
+        headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+        val querys: Map<String, String> = HashMap()
+        val bodys: MutableMap<String, String> = HashMap()
+        bodys["src"] = "乔布斯"
+
+
+        try {
+            /**
+             * 重要提示如下:
+             * HttpUtils请从
+             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
+             * 下载
+             *
+             * 相应的依赖请参照
+             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
+             */
+            val response: HttpResponse =
+                HttpUtils.doPost(host, path, method, headers, querys, bodys)
+            println(response.toString())
+            //获取response的body
+            //System.out.println(EntityUtils.toString(response.getEntity()));
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     interface ParsePlantApiListener {

@@ -124,7 +124,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
         mIvSearch.setOnClickListener {
             hideKeyBoard()
-            val searchText = mEtSearch.text.toString()
+            val searchText = mEtSearch.text.trim().toString()
             if (!TextUtils.isEmpty(searchText)) {
                 searchPlant(searchText)
             } else {
@@ -329,7 +329,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     // 文字搜索植物
     private fun searchPlant(plant: String) {
         // TODO 获取string 搜索内容展示结果
-        Log.e(TAG, plant)
+
     }
 
     companion object {

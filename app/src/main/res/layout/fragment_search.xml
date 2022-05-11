@@ -51,6 +51,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintRight_toLeftOf="@id/search_button"
         android:layout_width="260dp"
+        android:selectAllOnFocus="true"
         android:layout_height="wrap_content" />
 
     <ImageButton
