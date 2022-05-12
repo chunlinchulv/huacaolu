@@ -27,7 +27,7 @@ import com.example.huacaolu.R
 import com.example.huacaolu.activity.SearchResultActivity
 import com.example.huacaolu.activity.SearchResultDetails
 import com.example.huacaolu.api.ParsePlant
-import com.example.huacaolu.bean.PlantBean
+import com.example.huacaolu.bean.SearchImagePlantBean
 import com.example.huacaolu.ui.MyPopupWindow
 import com.google.gson.Gson
 import java.io.FileOutputStream
@@ -344,7 +344,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     }
 
     private fun getResult(jsonString: String) {
-        val plantBean = Gson().fromJson(jsonString, PlantBean::class.java)
+        val plantBean = Gson().fromJson(jsonString, SearchImagePlantBean::class.java)
         val results = plantBean.getResult()
         if (results == null || results.size == 0) {
             Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
@@ -354,23 +354,23 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
             Toast.makeText(requireContext(),"${results[0]?.name} 请重试 ",Toast.LENGTH_SHORT).show()
             return
         }
-        val dataPlantBean : PlantBean = PlantBean()
-        val resultArrayList : ArrayList<PlantBean.ResultDTO?> = arrayListOf<PlantBean.ResultDTO?>()
-        for (data : PlantBean.ResultDTO? in results) {
+        val dataSearchImagePlantBean : SearchImagePlantBean = SearchImagePlantBean()
+        val resultArrayList : ArrayList<SearchImagePlantBean.ResultDTO?> = arrayListOf<SearchImagePlantBean.ResultDTO?>()
+        for (data : SearchImagePlantBean.ResultDTO? in results) {
             if (data?.score!! > 0.5 ) {
                 resultArrayList.add(data)
             }
         }
-        dataPlantBean.setLog_id(plantBean.getLog_id())
-        dataPlantBean.setResult(resultArrayList)
+        dataSearchImagePlantBean.setLog_id(plantBean.getLog_id())
+        dataSearchImagePlantBean.setResult(resultArrayList)
         if (resultArrayList.size == 1) {
             startActivityDetails(resultArrayList[0]!!)
         }else {
-            startSearchResultActivity(Gson().toJson(dataPlantBean))
+            startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean))
         }
     }
 
-    private fun startActivityDetails(resultDTO: PlantBean.ResultDTO) {
+    private fun startActivityDetails(resultDTO: SearchImagePlantBean.ResultDTO) {
         val intent = Intent(requireContext(), SearchResultDetails::class.java)
         intent.putExtra("jsonString",Gson().toJson(resultDTO))
         intent.putExtra("imageUrl",imageUrl)

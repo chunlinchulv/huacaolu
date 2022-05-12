@@ -3,7 +3,7 @@ package com.example.huacaolu.bean
 import android.os.Parcel
 import android.os.Parcelable
 
-class PlantBean() : Parcelable {
+class SearchImagePlantBean() : Parcelable {
     private var log_id: Long = 0
     private var result: ArrayList<ResultDTO?>? = null
 
@@ -111,12 +111,12 @@ class PlantBean() : Parcelable {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PlantBean> {
-        override fun createFromParcel(parcel: Parcel): PlantBean {
-            return PlantBean(parcel)
+    companion object CREATOR : Parcelable.Creator<SearchImagePlantBean> {
+        override fun createFromParcel(parcel: Parcel): SearchImagePlantBean {
+            return SearchImagePlantBean(parcel)
         }
 
-        override fun newArray(size: Int): Array<PlantBean?> {
+        override fun newArray(size: Int): Array<SearchImagePlantBean?> {
             return arrayOfNulls(size)
         }
     }

@@ -2,7 +2,7 @@ package com.example.huacaolu.bean;
 
 import java.util.List;
 
-public class PlantWordsBean {
+public class SearchWordsPlantBean {
     private int status;
     private List<MsgDTO> msg;
 

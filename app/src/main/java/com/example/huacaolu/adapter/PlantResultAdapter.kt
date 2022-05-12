@@ -1,22 +1,19 @@
 package com.example.huacaolu.adapter
 
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
-import com.example.huacaolu.bean.PlantBean
+import com.example.huacaolu.bean.SearchImagePlantBean
 
-class PlantResultAdapter(context: Context,dataList: ArrayList<PlantBean.ResultDTO?>?) : BaseAdapter() {
+class PlantResultAdapter(context: Context,dataList: ArrayList<SearchImagePlantBean.ResultDTO?>?) : BaseAdapter() {
     private var context: Context = context
-    private var dataList: ArrayList<PlantBean.ResultDTO?>? = dataList
+    private var dataList: ArrayList<SearchImagePlantBean.ResultDTO?>? = dataList
     private var layoutInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     override fun getCount(): Int {
         return dataList?.size!!

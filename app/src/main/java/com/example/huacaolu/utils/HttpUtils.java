@@ -294,7 +294,7 @@ public class HttpUtils {
     }
 
     private static void sslClient(HttpClient httpClient) throws Exception {
-
+        SSLContext ctx = SSLContext.getInstance("TLS");
         X509TrustManager tm = new X509TrustManager() {
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
@@ -306,7 +306,8 @@ public class HttpUtils {
 
             }
         };
-        KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+        ctx.init(null, new TrustManager[] { tm }, null);
+        KeyStore store = KeyStore.getInstance(null);
         SSLSocketFactory ssf = new SSLSocketFactory(store);
         ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
         ClientConnectionManager ccm = httpClient.getConnectionManager();

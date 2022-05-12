@@ -1,0 +1,28 @@
+{
+  "result":[{
+    "imagePath":"https://bkimg.cdn.bcebos.com/pic/b7003af33a87e950352a4e90ad764443fbf2b3111eb2?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UxMTY=,g_7,xp_5,yp_5/format,f_auto",
+    "name":"玫瑰",
+    "url":"https://baike.baidu.com/item/%E7%8E%AB%E7%91%B0/63206?fr=aladdin"
+  },
+    {
+      "imagePath":"https://bkimg.cdn.bcebos.com/pic/bd315c6034a85edf8db1f8f0181b1e23dd54574edf9b?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto",
+      "name":"荷花",
+      "url":"https://baike.baidu.com/item/%E8%8D%B7%E8%8A%B1/158674?fromtitle=%E8%8E%B2%E8%8A%B1&fromid=25496"
+    },
+    {
+      "imagePath":"https://bkimg.cdn.bcebos.com/pic/dc54564e9258d109c055b9efdc58ccbf6c814d3c?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U5Mg==,g_7,xp_5,yp_5/format,f_auto",
+      "name":"兰花",
+      "url":"https://baike.baidu.com/item/%E5%85%B0%E8%8A%B1/15278221"
+    },
+    {
+      "imagePath":"https://bkimg.cdn.bcebos.com/pic/7acb0a46f21fbe095c93f6c165600c338644ad11?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UxMTY=,g_7,xp_5,yp_5/format,f_auto",
+      "name":"向日葵",
+      "url":"https://baike.baidu.com/item/%E5%90%91%E6%97%A5%E8%91%B5/6106"
+    },
+    {
+      "imagePath":"https://bkimg.cdn.bcebos.com/pic/d439b6003af33a873f7eb0fdc45c10385243b5c2?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U5Mg==,g_7,xp_5,yp_5/format,f_auto",
+      "name":"绣球",
+      "url":"https://baike.baidu.com/item/%E7%BB%A3%E7%90%83/4639080?fromtitle=%E7%BB%A3%E7%90%83%E8%8A%B1&fromid=1070815"
+    }],
+  "resultCode":2020
+}
