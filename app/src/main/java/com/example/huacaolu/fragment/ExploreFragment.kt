@@ -7,12 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.huacaolu.R
-import com.example.huacaolu.activity.SearchResultActivity
 import com.example.huacaolu.activity.WebActivity
 import com.example.huacaolu.adapter.StaggeredGridAdapter
 import com.example.huacaolu.bean.ExplorePlantBean
@@ -40,7 +38,7 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_explore, container, false)
+        return inflater.inflate(R.layout.fragment_explore_recycler_view, container, false)
     }
 
     companion object {

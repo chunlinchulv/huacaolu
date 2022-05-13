@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +23,7 @@ class StaggeredGridAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val viewHolder = ViewHolder(
-            LayoutInflater.from(mContext).inflate(R.layout.layout_staggere_grid_item, parent, false)
+            LayoutInflater.from(mContext).inflate(R.layout.fragment_explore_recycler_view_item, parent, false)
         )
         return viewHolder
     }
