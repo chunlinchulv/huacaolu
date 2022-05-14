@@ -5,19 +5,33 @@
     android:layout_height="wrap_content"
     android:background="#ffffff"
     android:orientation="vertical"
-    android:layout_margin="5dp">
+    android:layout_margin="2dp">
 
     <ImageView
         android:id="@+id/iv_plant_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="2dp"
-        android:scaleType="fitXY"/>
-    <TextView
-        android:id="@+id/tv_plant_name"
-        android:layout_width="wrap_content"
+        android:layout_margin="2dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"/>
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/tv_plant_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_margin="2dp"
+            android:layout_alignParentStart="true"/>
+        <ImageView
+            android:id="@+id/iBtn_fabulous"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:background="@null"
+            android:src="@drawable/icon_fabulous_unlike"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
 </LinearLayout>

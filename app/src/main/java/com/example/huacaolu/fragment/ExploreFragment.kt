@@ -1,12 +1,15 @@
 package com.example.huacaolu.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -14,9 +17,12 @@ import com.example.huacaolu.R
 import com.example.huacaolu.activity.WebActivity
 import com.example.huacaolu.adapter.StaggeredGridAdapter
 import com.example.huacaolu.bean.ExplorePlantBean
+import com.example.huacaolu.utils.Base64Util
+import com.example.huacaolu.utils.DataBaseUtil
 import com.google.gson.Gson
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -96,7 +102,34 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
             intent.putExtra("url",url)
             startActivity(intent)
         }
-
     }
+
+    @SuppressLint("Range")
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun clickLike(explorePlantBean: ExplorePlantBean.Result) {
+        val urlBase64String = Base64Util.encodeString(explorePlantBean.url)
+        Log.e("clickLike",urlBase64String)
+        val cursor  = DataBaseUtil.getInstance().query(urlBase64String)
+        if (cursor.count == 0) {
+            val insert = DataBaseUtil.getInstance().insert(urlBase64String, explorePlantBean)
+            Log.e("insert", insert.toString())
+        }else {
+            val delete = DataBaseUtil.getInstance().delete(urlBase64String)
+            Log.e("delete", delete.toString())
+        }
+//        while(cursor .moveToNext()){
+//            val id = cursor .getString(cursor .getColumnIndex("id"))
+//            val imagePath = cursor .getString(cursor .getColumnIndex("imagePath"))
+//            val name = cursor .getString(cursor .getColumnIndex("name"))
+//            val url = cursor .getString(cursor .getColumnIndex("url"))
+//            Log.e("clickLike", "id = $id")
+//            Log.e("clickLike", "imagePath = $imagePath")
+//            Log.e("clickLike", "name = $name")
+//            Log.e("clickLike", "url = $url")
+//        }
+        cursor.close()
+    }
+
+
 
 }

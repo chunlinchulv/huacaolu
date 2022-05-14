@@ -88,7 +88,7 @@ class ParsePlant {
                 val url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/plant"
                 try {
                     val imgData: ByteArray = FileUtil.readFileByBytes(filePath)
-                    val imgStr = Base64Util.encode(imgData)
+                    val imgStr = Base64Util.encodeImage(imgData)
                     val imgPara = URLEncoder.encode(imgStr, "UTF-8")
 
                     val para = "image=$imgPara"

@@ -1,5 +1,15 @@
 package com.example.huacaolu.utils;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.common.base.Charsets;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Locale;
+
 /**
  * Base64 工具类
  */
@@ -15,7 +25,7 @@ public class Base64Util {
     public Base64Util() {
     }
 
-    public static String encode(byte[] from) {
+    public static String encodeImage(byte[] from) {
         StringBuilder to = new StringBuilder((int) ((double) from.length * 1.34D) + 3);
         int num = 0;
         char currentByte = 0;
@@ -61,5 +71,21 @@ public class Base64Util {
         }
 
         return to.toString();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String encodeString(String url) {
+        byte[] urlByte = url.getBytes(Charsets.UTF_8);
+        byte[] urlBase64 = Base64.getEncoder().encode(urlByte);
+        String urlBase64String = encode2String(urlBase64);
+        return urlBase64String;
+    }
+
+    private static String encode2String(byte[] bytes)  {
+        StringBuffer buf = new StringBuffer(bytes.length);
+        for (int index = 0;index < bytes.length; index ++) {
+            buf.append(bytes[index]);
+        }
+        return buf.toString().toUpperCase(Locale.ROOT);
     }
 }
