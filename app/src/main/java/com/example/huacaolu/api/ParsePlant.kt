@@ -31,7 +31,7 @@ class ParsePlant {
         private const val API_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
         private const val SECRET_KEY = "U65Bwu0iGBsfOjV7uWTArjvf"
         private const val accessToken =
-            "24.a83419bc7d8f35842b3245f42af93bcd.2592000.1652691973.282335-25964377"
+            "24.0d5369ab439635d401bf26bd4e0d3391.2592000.1655289531.282335-25964377"
         private var client: AipImageClassify? = null
         private val options : HashMap<String,String>
         init {
@@ -54,7 +54,7 @@ class ParsePlant {
                 try {
                     val data = Util.readFileByBytes(path)
                     val result = client!!.objectDetect(data, HashMap())
-                    listener.parsePlantSuccess(result.toString())
+                    listener.parsePlantSuccess(result.toString(),path)
                 }catch (e: IOException){
                     e.printStackTrace()
                     listener.parsePlantFailure( AipError.IMAGE_READ_ERROR.toJsonResult().toString())
@@ -64,19 +64,35 @@ class ParsePlant {
         }.start()
     }
 
-    fun parsePlantByByte(path : String) {
+    fun parsePlantByFilePath(path : String) {
         object : Thread(){
             override fun run() {
                 super.run()
                 try {
                     val data = Util.readFileByBytes(path)
                     val result = client!!.plantDetect(data, options)
-                    listener.parsePlantSuccess(result.toString())
+                    listener.parsePlantSuccess(result.toString(),path)
                 }catch (e: IOException){
                     e.printStackTrace()
                     listener.parsePlantFailure( AipError.IMAGE_READ_ERROR.toJsonResult().toString())
                 }
 
+            }
+        }.start()
+    }
+
+    fun parsePlantByByte(byteArray: ByteArray) {
+        Log.e("parsePlantByByte", "parsePlantByByte")
+        object : Thread(){
+            override fun run() {
+                super.run()
+                try {
+                    val result = client!!.plantDetect(byteArray, options)
+                    listener.parsePlantSuccess(result.toString(),byteArray)
+                }catch (e: IOException){
+                    e.printStackTrace()
+                    listener.parsePlantFailure( AipError.IMAGE_READ_ERROR.toJsonResult().toString())
+                }
             }
         }.start()
     }
@@ -95,14 +111,14 @@ class ParsePlant {
 
                     /**
                      * 百度 调用鉴权接口获取的token，三十天有效，过期需要重新获取
-                     * 终端命令：curl -i -k 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=U65Bwu0iGBsfOjV7uWTArjvf&client_secret=GyZfupKKM7KtHxrsF5ybRnX5TsHk85DW'
+                     * 终端命令：curl -i -k 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=U65Bwu0iGBsfOjV7uWTArjvf&client_secret=U65Bwu0iGBsfOjV7uWTArjvf'
                      */
                     val accessToken =
                         "24.a83419bc7d8f35842b3245f42af93bcd.2592000.1652691973.282335-25964377"
 
                     val result = HttpUtil.post(url, accessToken, para)
                     println("结果:$result")
-                    listener.parsePlantSuccess(result)
+                    listener.parsePlantSuccess(result,filePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     listener.parsePlantFailure(e.message.toString())
@@ -161,7 +177,7 @@ class ParsePlant {
         this.listener = listener
     }
 
-    fun parsePlantWithWords(plantName:String) {
+    fun parsePlantWithWords(plantName : String) {
         Log.e("xxx plantName = " , plantName)
         val host = "https://baike.market.alicloudapi.com"
         val path = "/baike"
@@ -195,7 +211,7 @@ class ParsePlant {
                     if (response == null) {
                         listener.parsePlantFailure("");
                     } else {
-                        listener.parsePlantSuccess(EntityUtils.toString(response.entity))
+                        listener.parsePlantSuccess(EntityUtils.toString(response.entity),plantName)
                     }
                     println(response.toString())
                     //获取response的body
@@ -210,8 +226,10 @@ class ParsePlant {
     }
 
     interface ParsePlantApiListener {
-        fun parsePlantSuccess(string:String)
-        fun parsePlantFailure(string:String)
+
+        fun parsePlantSuccess(string : String,imagePath : String)
+        fun parsePlantSuccess(string : String,byteArray: ByteArray)
+        fun parsePlantFailure(string : String)
     }
 
 

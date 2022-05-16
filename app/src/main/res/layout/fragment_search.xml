@@ -16,6 +16,10 @@
         android:background="#88ffffff"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
+    <com.example.huacaolu.ui.CameraGLSurfaceView
+        android:id="@+id/gl_surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <TextView
         android:id="@+id/search_find_text"
         android:text="@string/find_plant_text"

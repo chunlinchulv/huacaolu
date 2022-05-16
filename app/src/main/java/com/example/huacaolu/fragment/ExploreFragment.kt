@@ -74,6 +74,7 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
         val staggeredGridAdapter = StaggeredGridAdapter(requireContext(), mExplorePlantBean.result)
         staggeredGridAdapter.setOnItemClickListener(this)
         mRecyclerView?.adapter = staggeredGridAdapter
+        mRecyclerView?.itemAnimator?.changeDuration = 0
     }
 
     private fun initView(view: View) {

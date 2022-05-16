@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.widget.AdapterView
 import android.widget.ImageView
@@ -16,8 +17,6 @@ import com.google.gson.Gson
 class SearchResultActivity : AppCompatActivity() {
     val TAG = "SearchResultActivity"
     lateinit var searchImagePlantBean : SearchImagePlantBean
-    lateinit var imageUrl: String
-    lateinit var ivResultPlant : ImageView
     lateinit var lvResult : ListView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +27,10 @@ class SearchResultActivity : AppCompatActivity() {
 
     private fun initView() {
         lvResult = findViewById(R.id.lv_result)
-        ivResultPlant = findViewById(R.id.search_result_Image)
-        ivResultPlant.scaleType = ImageView.ScaleType.CENTER_CROP
-
     }
 
     private fun initData() {
         val jsonString = intent.extras?.get("jsonString") as String
-        imageUrl = intent.extras?.get("imageUrl") as String
         searchImagePlantBean= Gson().fromJson(jsonString, SearchImagePlantBean::class.java)
         Log.e(TAG,searchImagePlantBean.toString())
         val dataList = searchImagePlantBean.getResult()
@@ -45,13 +40,13 @@ class SearchResultActivity : AppCompatActivity() {
             val data = dataList?.get(position)
             data?.let { startActivityDetails(it) }
         }
-        ivResultPlant.setImageBitmap(BitmapFactory.decodeFile(imageUrl))
     }
 
     private fun startActivityDetails(resultDTO: SearchImagePlantBean.ResultDTO) {
         val intent = Intent(this, SearchResultDetails::class.java)
         intent.putExtra("jsonString",Gson().toJson(resultDTO))
-        intent.putExtra("imageUrl",imageUrl)
+        intent.putExtra("imageUrl","")
+        intent.putExtra("byteArray",ByteArray(0))
         startActivity(intent)
     }
 }

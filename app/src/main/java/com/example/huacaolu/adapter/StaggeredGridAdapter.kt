@@ -28,12 +28,14 @@ class StaggeredGridAdapter(
 ) :
     RecyclerView.Adapter<StaggeredGridAdapter.ViewHolder>() {
 
-    private lateinit var listener: StaggeredGridAdapter.OnItemClickListener
+    private lateinit var listener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Log.e("onCreateViewHolder", viewType.toString())
         val viewHolder = ViewHolder(
             LayoutInflater.from(mContext).inflate(R.layout.fragment_explore_recycler_view_item, parent, false)
         )
+        viewHolder.setIsRecyclable(true);
         return viewHolder
     }
 
@@ -64,15 +66,17 @@ class StaggeredGridAdapter(
         }.start()
 
         holder.mPlantLike.setOnClickListener(View.OnClickListener {
-            if (isLike) {
+            isLike = if (isLike) {
                 holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
+                false
             }else {
                 holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_like)
+                true
             }
             listener.clickLike(resultList[position])
             // 使用下面的方法去刷新整个条目的数据，但是会造成条目中耗时的操作会闪一下，例如网络加载图片
             // 此时需要一个三级缓存
-            this.notifyItemChanged(position)
+
         })
     }
 
@@ -91,7 +95,7 @@ class StaggeredGridAdapter(
         fun clickLike(explorePlantBean : ExplorePlantBean.Result)
     }
 
-    public fun setOnItemClickListener (listener : OnItemClickListener){
+    fun setOnItemClickListener (listener : OnItemClickListener){
         this.listener = listener
     }
 }

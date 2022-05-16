@@ -4,15 +4,15 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.*
+import android.hardware.Camera
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -28,8 +28,11 @@ import com.example.huacaolu.activity.SearchResultActivity
 import com.example.huacaolu.activity.SearchResultDetails
 import com.example.huacaolu.api.ParsePlant
 import com.example.huacaolu.bean.SearchImagePlantBean
+import com.example.huacaolu.helper.CameraProxy
+import com.example.huacaolu.ui.CameraGLSurfaceView
 import com.example.huacaolu.ui.MyPopupWindow
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -37,7 +40,8 @@ import java.io.IOException
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
+class SearchFragment : Fragment(),
+    ParsePlant.ParsePlantApiListener {
 
     private val TAG = "SearchFragment"
     private var param1: String? = null
@@ -59,11 +63,16 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     lateinit var mIvSearch: ImageView
     lateinit var mIvTakePhoto: ImageView
     lateinit var mEtSearch: EditText
+    lateinit var mGLSurfaceView: CameraGLSurfaceView
 
     lateinit var client: AipImageClassify
     lateinit var imageUrl: String
     lateinit var parsePlantApi : ParsePlant
+    var isParsePlantSuccessByByteArray: Boolean = false
+    private var isDestroy: Boolean = false
+    private var isPause: Boolean = false
 
+    lateinit var mCameraProxy: CameraProxy
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -83,7 +92,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
                         showImage(imageUrl)
 //                    parsePlantApi.parsePlantByHttp(imageUrl)
 //                    parsePlantApi.parsePlantByLocalPath(imageUrl)
-                        parsePlantApi.parsePlantByByte(imageUrl)
+                        parsePlantApi.parsePlantByFilePath(imageUrl)
                     }
 
                 }
@@ -109,6 +118,69 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
         initApi()
         initView(view)
         initPopWindow()
+        initGLSurfaceView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mGLSurfaceView.requestRender()
+    }
+
+    private fun initGLSurfaceView() {
+        mCameraProxy = mGLSurfaceView.cameraProxy!!
+        mGLSurfaceView.setSurfaceViewCallback(object : CameraGLSurfaceView.SurfaceViewCallbackListener {
+            override fun surfaceViewCreate() {
+
+            }
+
+            override fun surfaceViewChange() {
+                mGLSurfaceView.setPreviewCallback(object : Camera.PreviewCallback{
+                    override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
+                        mGLSurfaceView.setPreviewCallback(this)
+                        if (!isParsePlantSuccessByByteArray) {
+                            isParsePlantSuccessByByteArray = true
+                            Log.e(TAG, "setPreviewCallback")
+                            val previewSize = p1?.parameters?.previewSize!! //获取尺寸,格式转换的时候要用到
+
+                            val newOpts = BitmapFactory.Options()
+                            newOpts.inJustDecodeBounds = true
+                            val yuvimage = YuvImage(
+                                p0,
+                                ImageFormat.NV21,
+                                previewSize.width,
+                                previewSize.height,
+                                null
+                            )
+                            val baos = ByteArrayOutputStream()
+                            yuvimage.compressToJpeg(
+                                Rect(0, 0, previewSize.width, previewSize.height),
+                                100,
+                                baos
+                            ) // 80--JPG图片的质量[0-100],100最高
+
+                            val rawImage: ByteArray = baos.toByteArray()
+
+                            parsePlantApi.parsePlantByByte(rawImage)
+                        }
+                    }
+
+                })
+            }
+
+        })
+
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isPause = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isDestroy = true
+        mCameraProxy.releaseCamera()
     }
 
     private fun initApi() {
@@ -121,6 +193,7 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
         mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
         mEtSearch = view.findViewById<EditText>(R.id.search_edit_text)
         mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
+        mGLSurfaceView = view.findViewById<CameraGLSurfaceView>(R.id.gl_surface_view)
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
         mIvSearch.setOnClickListener {
             hideKeyBoard()
@@ -310,12 +383,6 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
         startActivityForResult(intent, CROP_IMAGE);
     }
 
-    private fun startSearchResultActivity(jsonString: String) {
-        val intent = Intent(requireContext(), SearchResultActivity::class.java)
-        intent.putExtra("jsonString",jsonString)
-        intent.putExtra("imageUrl",imageUrl)
-        startActivity(intent)
-    }
 
     private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
         val matrix = Matrix()
@@ -343,52 +410,80 @@ class SearchFragment : Fragment(), ParsePlant.ParsePlantApiListener {
             }
     }
 
-    private fun getResult(jsonString: String) {
+    private fun getResult(jsonString: String, imagePath: String?, byteArray: ByteArray?) {
+        if (isDestroy || isPause) {
+            // 异步操作 不建议弹toast，在运行到此处之前关闭了应用切入后台，则会crash，报IllegalStateException,所以加入判断进行拦截
+            return
+        }
         val plantBean = Gson().fromJson(jsonString, SearchImagePlantBean::class.java)
         val results = plantBean.getResult()
         if (results == null || results.size == 0) {
-            Toast.makeText(requireContext(),"数据解析失败，请重新尝试",Toast.LENGTH_SHORT).show()
+            if (!TextUtils.isEmpty(imagePath)) {
+                Toast.makeText(requireContext(), "数据解析失败，请重新尝试", Toast.LENGTH_SHORT).show()
+            }
+            isParsePlantSuccessByByteArray = false
             return
         }
         if (results[0]?.baike_info == null || TextUtils.equals("非植物",results[0]?.name)) {
-            Toast.makeText(requireContext(),"${results[0]?.name} 请重试 ",Toast.LENGTH_SHORT).show()
+            if (!TextUtils.isEmpty(imagePath)) {
+                Toast.makeText(requireContext(), "${results[0]?.name} 请重试 ", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            isParsePlantSuccessByByteArray = false
             return
+        }
+        if (byteArray != null) {
+            isParsePlantSuccessByByteArray = true
         }
         val dataSearchImagePlantBean : SearchImagePlantBean = SearchImagePlantBean()
         val resultArrayList : ArrayList<SearchImagePlantBean.ResultDTO?> = arrayListOf<SearchImagePlantBean.ResultDTO?>()
         for (data : SearchImagePlantBean.ResultDTO? in results) {
-            if (data?.score!! > 0.5 ) {
+            if (data?.score!! > 0.05 ) {
                 resultArrayList.add(data)
             }
         }
         dataSearchImagePlantBean.setLog_id(plantBean.getLog_id())
         dataSearchImagePlantBean.setResult(resultArrayList)
         if (resultArrayList.size == 1) {
-            startActivityDetails(resultArrayList[0]!!)
-        }else {
-            startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean))
+            startActivityDetails(resultArrayList[0]!!,imagePath,byteArray)
+        }else if (resultArrayList.size > 1){
+            startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean),imagePath,byteArray)
         }
     }
 
-    private fun startActivityDetails(resultDTO: SearchImagePlantBean.ResultDTO) {
+    private fun startActivityDetails(resultDTO: SearchImagePlantBean.ResultDTO, imagePath: String?,byteArray: ByteArray?) {
+        Log.e(TAG, "startActivityDetails: $imagePath")
         val intent = Intent(requireContext(), SearchResultDetails::class.java)
         intent.putExtra("jsonString",Gson().toJson(resultDTO))
-        intent.putExtra("imageUrl",imageUrl)
         startActivity(intent)
     }
 
-    override fun parsePlantSuccess(string: String) {
+    private fun startSearchResultActivity(jsonString: String,imagePath: String?,byteArray: ByteArray?) {
+        Log.e(TAG, "startSearchResultActivity:")
+        val intent = Intent(requireContext(), SearchResultActivity::class.java)
+        intent.putExtra("jsonString",jsonString)
+        startActivity(intent)
+    }
+
+    override fun parsePlantSuccess(string: String, imagePath: String) {
         Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
         // Toast需要在主线程弹
         Handler(Looper.getMainLooper()).post {
-            getResult(string)
+            getResult(string,imagePath, ByteArray(0))
+        }
+    }
+
+    override fun parsePlantSuccess(string: String, byteArray: ByteArray) {
+        Log.e(TAG, "parsePlantSuccess = $string")
+
+        Handler(Looper.getMainLooper()).post {
+            getResult(string,"",byteArray)
         }
     }
 
     override fun parsePlantFailure(string: String) {
-        Handler(Looper.getMainLooper()).post {
-            Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
-        }
+        Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+        isParsePlantSuccessByByteArray = false
     }
 
 }
