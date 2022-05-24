@@ -5,19 +5,12 @@
       <map>
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/dialog_bg_normal.xml" value="0.253" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/drawable/selector_text_press_color.xml" value="0.253" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_glsurface_camera.xml" value="0.17395833333333333" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_glsurface_view.xml" value="0.26927083333333335" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_main.xml" value="0.3203125" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_mains.xml" value="0.23958333333333334" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_search_result.xml" value="0.3234375" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_search_result_details.xml" value="0.29270833333333335" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_surface_camera.xml" value="0.23958333333333334" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/activity_web.xml" value="0.15885416666666666" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.3098958333333333" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/dialog_popup_window.xml" value="0.259375" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_explore.xml" value="0.2115036231884058" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_explore_recycler_view_item.xml" value="0.3671875" />
-        <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_my_garden.xml" value="0.24375" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/fragment_search.xml" value="0.20833333333333334" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/layout_staggere_grid_item.xml" value="0.22395833333333334" />
         <entry key="..\:/AndroidProject/huacaolu/app/src/main/res/layout/search_result_item.xml" value="0.2630208333333333" />
@@ -35,17 +28,28 @@
         <entry key="..\:/Users/woshi/HuaCaoLu/app/src/main/res/layout/fragment_search.xml" value="0.2" />
         <entry key="app/src/main/res/drawable/dialog_bg_normal.xml" value="0.1975" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2095" />
+        <entry key="app/src/main/res/drawable/round.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/selector_text_press_color.xml" value="0.2095" />
         <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_glsurface_camera.xml" value="0.325" />
+        <entry key="app/src/main/res/layout/activity_glsurface_view.xml" value="0.325" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_real_time_idents.xml" value="0.2942708333333333" />
         <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.33967391304347827" />
         <entry key="app/src/main/res/layout/activity_search_result_details.xml" value="0.33489583333333334" />
+        <entry key="app/src/main/res/layout/activity_web.xml" value="0.325" />
         <entry key="app/src/main/res/layout/bottom_tab_layout_content.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_popup_window.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_my_garden.xml" value="0.3472222222222222" />
+        <entry key="app/src/main/res/layout/fragment_explore_recycler_view.xml" value="0.325" />
+        <entry key="app/src/main/res/layout/fragment_explore_recycler_view_item.xml" value="0.3182291666666667" />
+        <entry key="app/src/main/res/layout/fragment_my_garden.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_search_real_time_idents.xml" value="0.3182291666666667" />
+        <entry key="app/src/main/res/layout/layout_staggere_grid_item.xml" value="0.2171875" />
         <entry key="app/src/main/res/layout/search_result_item.xml" value="0.33489583333333334" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1535" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.166" />
       </map>
     </option>
   </component>

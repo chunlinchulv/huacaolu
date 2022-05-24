@@ -18,6 +18,9 @@
         android:theme="@style/Theme.HuaCaoLu"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.RealTimeIdentsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.GLSurfaceViewActivity"
             android:exported="false" />
         <activity

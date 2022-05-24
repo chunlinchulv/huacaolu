@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.huacaolu.R
 import com.example.huacaolu.api.ParsePlant
@@ -26,9 +22,6 @@ class MyGardenFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     private var param1: String? = null
     private var param2: String? = null
     lateinit var mImageUri : Uri
-    lateinit var mIvSearch: ImageView
-    lateinit var mIvTakePhoto: ImageView
-    lateinit var mEtSearch: EditText
     lateinit var parsePlantApi : ParsePlant
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +49,7 @@ class MyGardenFragment : Fragment(), ParsePlant.ParsePlantApiListener {
     }
 
     private fun initView(view: View) {
-        mIvSearch = view.findViewById<ImageView>(R.id.search_button)
-        mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
-        mEtSearch = view.findViewById<EditText>(R.id.search_edit_text)
-        mIvSearch.setOnClickListener {
+/*        mIvSearch.setOnClickListener {
             hideKeyBoard()
             val searchText = mEtSearch.text.trim().toString()
             if (!TextUtils.isEmpty(searchText)) {
@@ -67,11 +57,7 @@ class MyGardenFragment : Fragment(), ParsePlant.ParsePlantApiListener {
             } else {
                 Toast.makeText(requireContext(), "请输入需要查询的花草名", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        mIvTakePhoto.setOnClickListener {
-            hideKeyBoard()
-        }
+        }*/
 
     }
 

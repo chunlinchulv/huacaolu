@@ -5,34 +5,30 @@ import android.app.Activity.RESULT_OK
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.*
-import android.hardware.Camera
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.baidu.aip.imageclassify.AipImageClassify
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
+import com.example.huacaolu.activity.RealTimeIdentsActivity
 import com.example.huacaolu.activity.SearchResultActivity
 import com.example.huacaolu.activity.SearchResultDetails
 import com.example.huacaolu.api.ParsePlant
 import com.example.huacaolu.bean.SearchImagePlantBean
-import com.example.huacaolu.helper.CameraProxy
-import com.example.huacaolu.ui.CameraGLSurfaceView
 import com.example.huacaolu.ui.MyPopupWindow
 import com.google.gson.Gson
-import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -63,8 +59,7 @@ class SearchFragment : Fragment(),
     lateinit var mIvSearch: ImageView
     lateinit var mIvTakePhoto: ImageView
     lateinit var mIvSelectAlbum: ImageView
-    lateinit var mEtSearch: EditText
-    lateinit var mGLSurfaceView: CameraGLSurfaceView
+    lateinit var mEtSearch: TextView
 
     lateinit var client: AipImageClassify
     lateinit var imageUrl: String
@@ -73,7 +68,6 @@ class SearchFragment : Fragment(),
     private var isDestroy: Boolean = false
     private var isPause: Boolean = false
 
-    lateinit var mCameraProxy: CameraProxy
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -119,58 +113,6 @@ class SearchFragment : Fragment(),
         initApi()
         initView(view)
         initPopWindow()
-        initGLSurfaceView()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mGLSurfaceView.requestRender()
-    }
-
-    private fun initGLSurfaceView() {
-        mCameraProxy = mGLSurfaceView.cameraProxy!!
-        mGLSurfaceView.setSurfaceViewCallback(object : CameraGLSurfaceView.SurfaceViewCallbackListener {
-            override fun surfaceViewCreate() {
-
-            }
-
-            override fun surfaceViewChange() {
-                mGLSurfaceView.setPreviewCallback(object : Camera.PreviewCallback{
-                    override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
-                        mGLSurfaceView.setPreviewCallback(this)
-                        if (!isParsePlantSuccessByByteArray) {
-                            isParsePlantSuccessByByteArray = true
-                            Log.e(TAG, "setPreviewCallback")
-                            val previewSize = p1?.parameters?.previewSize!! //获取尺寸,格式转换的时候要用到
-
-                            val newOpts = BitmapFactory.Options()
-                            newOpts.inJustDecodeBounds = true
-                            val yuvimage = YuvImage(
-                                p0,
-                                ImageFormat.NV21,
-                                previewSize.width,
-                                previewSize.height,
-                                null
-                            )
-                            val baos = ByteArrayOutputStream()
-                            yuvimage.compressToJpeg(
-                                Rect(0, 0, previewSize.width, previewSize.height),
-                                100,
-                                baos
-                            ) // 80--JPG图片的质量[0-100],100最高
-
-                            val rawImage: ByteArray = baos.toByteArray()
-
-                            parsePlantApi.parsePlantByByte(rawImage)
-                        }
-                    }
-
-                })
-            }
-
-        })
-
-
     }
 
     override fun onPause() {
@@ -181,7 +123,6 @@ class SearchFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         isDestroy = true
-        mCameraProxy.releaseCamera()
     }
 
     private fun initApi() {
@@ -192,29 +133,17 @@ class SearchFragment : Fragment(),
     private fun initView(view: View) {
         mIvSearch = view.findViewById<ImageView>(R.id.search_button)
         mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
-        mIvSelectAlbum = view.findViewById<ImageView>(R.id.search_album)
-        mEtSearch = view.findViewById<EditText>(R.id.search_edit_text)
+        mEtSearch = view.findViewById<TextView>(R.id.search_edit_text)
         mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
-        mGLSurfaceView = view.findViewById<CameraGLSurfaceView>(R.id.gl_surface_view)
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
         mIvSearch.setOnClickListener {
-            hideKeyBoard()
-            val searchText = mEtSearch.text.trim().toString()
-            if (!TextUtils.isEmpty(searchText)) {
-                searchPlant(searchText)
-            } else {
-                Toast.makeText(requireContext(), "请输入需要查询的花草名", Toast.LENGTH_SHORT).show()
-            }
+            val intent = Intent(activity,RealTimeIdentsActivity::class.java)
+            startActivity(intent)
         }
 
         mIvTakePhoto.setOnClickListener {
             hideKeyBoard()
             mPopupWindow.showPopupWindow(view)
-        }
-
-        mIvSelectAlbum.setOnClickListener{
-            hideKeyBoard()
-            chooseImage()
         }
     }
 
@@ -225,8 +154,6 @@ class SearchFragment : Fragment(),
             imm.hideSoftInputFromWindow(view.windowToken,0)
         }
     }
-
-
 
     private fun initPopWindow() {
         mPopupWindow = MyPopupWindow(requireContext())
