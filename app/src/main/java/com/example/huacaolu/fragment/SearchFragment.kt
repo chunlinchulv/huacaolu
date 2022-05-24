@@ -345,7 +345,7 @@ class SearchFragment : Fragment(),
     }
 
     private fun getResult(jsonString: String, imagePath: String?, byteArray: ByteArray?) {
-        if (isDestroy || isPause) {
+        if (isDestroy) {
             // 异步操作 不建议弹toast，在运行到此处之前关闭了应用切入后台，则会crash，报IllegalStateException,所以加入判断进行拦截
             return
         }
@@ -382,6 +382,9 @@ class SearchFragment : Fragment(),
             startActivityDetails(resultArrayList[0]!!,imagePath,byteArray)
         }else if (resultArrayList.size > 1){
             startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean),imagePath,byteArray)
+        }else {
+
+            Toast.makeText(requireContext(), "没有数据", Toast.LENGTH_SHORT).show()
         }
     }
 
