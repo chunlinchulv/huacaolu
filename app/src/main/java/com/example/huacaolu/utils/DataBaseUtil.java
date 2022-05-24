@@ -41,12 +41,24 @@ public class DataBaseUtil {
         return writableDatabase.delete(DataBasePlantHelper.TB_NAME, "id = ?", new String[]{id});
     }
 
-    public Cursor query(String id){
+    public Cursor queryByID(String id){
         String[] columns = new String[]{"id","imagePath","name","url"};
         // 参数为空则为返回所有列
 //        String[] columns = null;
         String selection = "id = ?";
         String[] selectionArgs = new String[]{id};
+        String groupBy = null;
+        String having = null;
+        String orderBy = null;
+        return writableDatabase.query(DataBasePlantHelper.TB_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+    }
+
+    public Cursor queryByName(String name){
+        String[] columns = new String[]{"id","imagePath","name","url"};
+        // 参数为空则为返回所有列
+//        String[] columns = null;
+        String selection = "name = ?";
+        String[] selectionArgs = new String[]{name};
         String groupBy = null;
         String having = null;
         String orderBy = null;

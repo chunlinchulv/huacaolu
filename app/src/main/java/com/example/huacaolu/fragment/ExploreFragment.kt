@@ -110,7 +110,7 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
     override fun clickLike(explorePlantBean: ExplorePlantBean.Result) {
         val urlBase64String = Base64Util.encodeString(explorePlantBean.url)
         Log.e("clickLike",urlBase64String)
-        val cursor  = DataBaseUtil.getInstance().query(urlBase64String)
+        val cursor  = DataBaseUtil.getInstance().queryByID(urlBase64String)
         if (cursor.count == 0) {
             val insert = DataBaseUtil.getInstance().insert(urlBase64String, explorePlantBean)
             Log.e("insert", insert.toString())

@@ -62,6 +62,7 @@ class SearchFragment : Fragment(),
     lateinit var mIvShowImage: ImageView
     lateinit var mIvSearch: ImageView
     lateinit var mIvTakePhoto: ImageView
+    lateinit var mIvSelectAlbum: ImageView
     lateinit var mEtSearch: EditText
     lateinit var mGLSurfaceView: CameraGLSurfaceView
 
@@ -191,6 +192,7 @@ class SearchFragment : Fragment(),
     private fun initView(view: View) {
         mIvSearch = view.findViewById<ImageView>(R.id.search_button)
         mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
+        mIvSelectAlbum = view.findViewById<ImageView>(R.id.search_album)
         mEtSearch = view.findViewById<EditText>(R.id.search_edit_text)
         mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
         mGLSurfaceView = view.findViewById<CameraGLSurfaceView>(R.id.gl_surface_view)
@@ -208,6 +210,11 @@ class SearchFragment : Fragment(),
         mIvTakePhoto.setOnClickListener {
             hideKeyBoard()
             mPopupWindow.showPopupWindow(view)
+        }
+
+        mIvSelectAlbum.setOnClickListener{
+            hideKeyBoard()
+            chooseImage()
         }
     }
 

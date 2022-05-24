@@ -6,6 +6,7 @@
     <string name="tab_explore">发现</string>
     <string name="search_plant">搜索植物</string>
     <string name="find_plant_text">发现你的心仪植物</string>
+    <string name="search_notice">请将摄像头对准花草或从相册选择图片进行识别</string>
     <string name="find_poetry">更无柳絮因风起，惟有葵花向日倾。——司马光《客中初夏》</string>
     <string name="my_garden">我的花园</string>
     <string name="plant_collection">植物收集</string>

@@ -53,7 +53,7 @@ class StaggeredGridAdapter(
             override fun run() {
                 super.run()
                 val urlBase64String = Base64Util.encodeString(resultList[position].url)
-                val cursor = DataBaseUtil.getInstance().query(urlBase64String)
+                val cursor = DataBaseUtil.getInstance().queryByID(urlBase64String)
                 isLike = if (cursor.count == 0) {
                     holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
                     false
