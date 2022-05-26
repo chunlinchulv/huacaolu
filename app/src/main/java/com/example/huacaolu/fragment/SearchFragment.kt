@@ -115,6 +115,12 @@ class SearchFragment : Fragment(),
         initPopWindow()
     }
 
+    override fun onResume() {
+        super.onResume()
+        isDestroy = false
+        isPause = false
+    }
+
     override fun onPause() {
         super.onPause()
         isPause = true
@@ -345,7 +351,7 @@ class SearchFragment : Fragment(),
     }
 
     private fun getResult(jsonString: String, imagePath: String?, byteArray: ByteArray?) {
-        if (isDestroy) {
+        if (isDestroy || isPause) {
             // 异步操作 不建议弹toast，在运行到此处之前关闭了应用切入后台，则会crash，报IllegalStateException,所以加入判断进行拦截
             return
         }
