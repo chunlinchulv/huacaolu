@@ -11,6 +11,8 @@ public class DataBasePlantHelper extends SQLiteOpenHelper {
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String URL = "url";
+    public static final String FABULOUS = "fabulous";
+    public static final String COLLECTION = "collection";
 
     public SQLiteDatabase mSQLiteDatabase ;
 
@@ -25,7 +27,9 @@ public class DataBasePlantHelper extends SQLiteOpenHelper {
                 ID + " TEXT," +
                 IMAGE_PATH + " TEXT," +
                 NAME +" TEXT," +
-                URL + " TEXT" +
+                URL + " TEXT," +
+                FABULOUS + " integer," +
+                COLLECTION + " integer" +
                 ") ");
         mSQLiteDatabase = db;
     }

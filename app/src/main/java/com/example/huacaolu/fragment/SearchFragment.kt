@@ -59,6 +59,7 @@ class SearchFragment : Fragment(),
     lateinit var mIvSearch: ImageView
     lateinit var mIvTakePhoto: ImageView
     lateinit var mIvSelectAlbum: ImageView
+    lateinit var mIvSelectScan: ImageView
     lateinit var mEtSearch: TextView
 
     lateinit var client: AipImageClassify
@@ -139,6 +140,8 @@ class SearchFragment : Fragment(),
     private fun initView(view: View) {
         mIvSearch = view.findViewById<ImageView>(R.id.search_button)
         mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
+        mIvSelectAlbum= view.findViewById<ImageView>(R.id.search_album)
+        mIvSelectScan = view.findViewById<ImageView>(R.id.search_scan)
         mEtSearch = view.findViewById<TextView>(R.id.search_edit_text)
         mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -149,7 +152,16 @@ class SearchFragment : Fragment(),
 
         mIvTakePhoto.setOnClickListener {
             hideKeyBoard()
-            mPopupWindow.showPopupWindow(view)
+            takePhoto()
+        }
+        mIvSelectAlbum.setOnClickListener {
+            hideKeyBoard()
+            chooseImage()
+        }
+        mIvSelectScan.setOnClickListener {
+            hideKeyBoard()
+            val intent = Intent(activity,RealTimeIdentsActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +18,9 @@ import com.example.huacaolu.R
 import com.example.huacaolu.activity.WebActivity
 import com.example.huacaolu.adapter.StaggeredGridAdapter
 import com.example.huacaolu.bean.ExplorePlantBean
+import com.example.huacaolu.helper.DataBasePlantHelper
 import com.example.huacaolu.utils.Base64Util
 import com.example.huacaolu.utils.DataBaseUtil
-import com.google.gson.Gson
-import java.io.IOException
-import java.io.InputStream
-import java.util.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -66,34 +64,43 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
     }
 
     private fun initData() {
-        val jsonString = getJson("plant.json")
-        Log.e("ExplorePlantBean",jsonString!!)
-        val mExplorePlantBean : ExplorePlantBean = Gson().fromJson(jsonString, ExplorePlantBean::class.java)
+        val result : MutableList<ExplorePlantBean.Result> = getData()
         mRecyclerView?.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        val staggeredGridAdapter = StaggeredGridAdapter(requireContext(), mExplorePlantBean.result)
+        val staggeredGridAdapter = StaggeredGridAdapter(requireContext(), result)
         staggeredGridAdapter.setOnItemClickListener(this)
         mRecyclerView?.adapter = staggeredGridAdapter
         mRecyclerView?.itemAnimator?.changeDuration = 0
     }
 
+    @SuppressLint("Range")
+    private fun getData(): MutableList<ExplorePlantBean.Result> {
+        val resultList : MutableList<ExplorePlantBean.Result> = arrayListOf<ExplorePlantBean.Result>()
+        val cursor  = DataBaseUtil.getInstance().queryAll()
+        if (cursor.moveToFirst()){
+            do {
+                val result : ExplorePlantBean.Result = ExplorePlantBean.Result()
+                val id = cursor.getInt(cursor.getColumnIndex(DataBasePlantHelper.ID))
+                val imagePath = cursor.getString(cursor.getColumnIndex(DataBasePlantHelper.IMAGE_PATH))
+                val name = cursor.getString(cursor.getColumnIndex(DataBasePlantHelper.NAME))
+                val url = cursor.getString(cursor.getColumnIndex(DataBasePlantHelper.URL))
+                val fabulous = cursor.getInt(cursor.getColumnIndex(DataBasePlantHelper.FABULOUS))
+                val collection = cursor.getInt(cursor.getColumnIndex(DataBasePlantHelper.COLLECTION))
+                result.id = id
+                result.imagePath = imagePath
+                result.name = name
+                result.url = url
+                result.fabulous = fabulous
+                result.collection = collection
+                resultList.add(result)
+            }while (cursor.moveToNext())
+        }
+        return resultList
+    }
+
     private fun initView(view: View) {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.rv_pu)
 
-    }
-
-    private fun getJson(fileName: String): String? {
-        try {
-            val inputStream: InputStream = requireContext().assets.open(fileName)
-            val size: Int = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            return String(buffer)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
     }
 
     override fun clickImage(url: String) {
@@ -105,32 +112,45 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
         }
     }
 
-    @SuppressLint("Range")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun clickLike(explorePlantBean: ExplorePlantBean.Result) {
-        val urlBase64String = Base64Util.encodeString(explorePlantBean.url)
+        val urlBase64String = Base64.encodeToString(explorePlantBean.url.toByteArray(), Base64.DEFAULT)
         Log.e("clickLike",urlBase64String)
         val cursor  = DataBaseUtil.getInstance().queryByID(urlBase64String)
-        if (cursor.count == 0) {
-            val insert = DataBaseUtil.getInstance().insert(urlBase64String, explorePlantBean)
-            Log.e("insert", insert.toString())
-        }else {
-            val delete = DataBaseUtil.getInstance().delete(urlBase64String)
-            Log.e("delete", delete.toString())
+        if (cursor.moveToFirst()){
+            do {
+                if (explorePlantBean.fabulous == 0) {
+                    explorePlantBean.fabulous = 1
+                }else{
+                    explorePlantBean.fabulous = 0
+                }
+                val update = DataBaseUtil.getInstance().update(urlBase64String, explorePlantBean)
+                Log.e("update", update.toString())
+            }while (cursor.moveToNext())
+        }else{
+            Log.e("delete", "没有查询到该数据")
         }
-//        while(cursor .moveToNext()){
-//            val id = cursor .getString(cursor .getColumnIndex("id"))
-//            val imagePath = cursor .getString(cursor .getColumnIndex("imagePath"))
-//            val name = cursor .getString(cursor .getColumnIndex("name"))
-//            val url = cursor .getString(cursor .getColumnIndex("url"))
-//            Log.e("clickLike", "id = $id")
-//            Log.e("clickLike", "imagePath = $imagePath")
-//            Log.e("clickLike", "name = $name")
-//            Log.e("clickLike", "url = $url")
-//        }
         cursor.close()
     }
 
+    override fun clickColl(explorePlantBean: ExplorePlantBean.Result) {
+        val urlBase64String = Base64.encodeToString(explorePlantBean.url.toByteArray(), Base64.DEFAULT)
+        Log.e("clickLike",urlBase64String)
+        val cursor  = DataBaseUtil.getInstance().queryByID(urlBase64String)
+        if (cursor.moveToFirst()){
+            do {
+                if (explorePlantBean.collection == 0) {
+                    explorePlantBean.collection = 1
+                }else{
+                    explorePlantBean.collection = 0
+                }
+                val update = DataBaseUtil.getInstance().update(urlBase64String, explorePlantBean)
+                Log.e("update", update.toString())
+            }while (cursor.moveToNext())
+        }else{
+            Log.e("delete", "没有查询到该数据")
+        }
+        cursor.close()
+    }
 
 
 }

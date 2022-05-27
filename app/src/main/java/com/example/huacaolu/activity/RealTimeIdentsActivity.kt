@@ -9,6 +9,8 @@ import android.graphics.YuvImage
 import android.hardware.Camera
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
@@ -44,6 +46,9 @@ class RealTimeIdentsActivity : AppCompatActivity(), ParsePlant.ParsePlantApiList
 
     override fun onResume() {
         super.onResume()
+        isPause = false
+        isDestroy = false
+        isParsePlantSuccessByByteArray = false
         mGLSurfaceView.requestRender()
     }
 
@@ -59,15 +64,24 @@ class RealTimeIdentsActivity : AppCompatActivity(), ParsePlant.ParsePlantApiList
     }
 
     override fun parsePlantSuccess(string: String, imagePath: String) {
-        TODO("Not yet implemented")
+        Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
+        // Toast需要在主线程弹
+        Handler(Looper.getMainLooper()).post {
+            getResult(string,imagePath, ByteArray(0))
+        }
     }
 
     override fun parsePlantSuccess(string: String, byteArray: ByteArray) {
-        TODO("Not yet implemented")
+        Log.e(TAG, "parsePlantSuccess = $string")
+
+        Handler(Looper.getMainLooper()).post {
+            getResult(string,"",byteArray)
+        }
     }
 
     override fun parsePlantFailure(string: String) {
-        TODO("Not yet implemented")
+        Log.e(TAG, "onActivityResult: parsePlantFailure = $string")
+        isParsePlantSuccessByByteArray = false
     }
 
     private fun initGLSurfaceView() {
@@ -81,7 +95,7 @@ class RealTimeIdentsActivity : AppCompatActivity(), ParsePlant.ParsePlantApiList
                 mGLSurfaceView.setPreviewCallback(object : Camera.PreviewCallback{
                     override fun onPreviewFrame(p0: ByteArray?, p1: Camera?) {
                         mGLSurfaceView.setPreviewCallback(this)
-                        if (isParsePlantSuccessByByteArray) {
+                        if (!isParsePlantSuccessByByteArray) {
                             isParsePlantSuccessByByteArray = true
                             Log.e(TAG, "setPreviewCallback")
                             val previewSize = p1?.parameters?.previewSize!! //获取尺寸,格式转换的时候要用到

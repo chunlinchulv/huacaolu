@@ -25,9 +25,12 @@ public class ExplorePlantBean {
     }
 
     public static class Result {
+        private int id;
         private String imagePath;
         private String name;
         private String url;
+        private int fabulous = 0;
+        private int collection = 0;
 
         public String getImagePath() {
             return imagePath;
@@ -51,6 +54,30 @@ public class ExplorePlantBean {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public int getFabulous() {
+            return fabulous;
+        }
+
+        public void setFabulous(int fabulous) {
+            this.fabulous = fabulous;
+        }
+
+        public int getCollection() {
+            return collection;
+        }
+
+        public void setCollection(int collection) {
+            this.collection = collection;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
     }
 }

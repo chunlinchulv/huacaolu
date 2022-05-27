@@ -11,7 +11,13 @@ import com.example.huacaolu.helper.DataBasePlantHelper;
 public class DataBaseUtil {
     private static SQLiteDatabase writableDatabase;
     private static DataBaseUtil instance;
-
+    private static String[] columns = new String[]{
+            DataBasePlantHelper.ID,
+            DataBasePlantHelper.IMAGE_PATH,
+            DataBasePlantHelper.NAME,
+            DataBasePlantHelper.URL,
+            DataBasePlantHelper.FABULOUS,
+            DataBasePlantHelper.COLLECTION};
     public static DataBaseUtil getInstance(){
         if (instance == null) {
             instance = new DataBaseUtil();
@@ -30,21 +36,29 @@ public class DataBaseUtil {
 
     public long insert(String id, ExplorePlantBean.Result plant){
         ContentValues values = new ContentValues();
-        values.put("id",id);
-        values.put("imagePath",plant.getImagePath());
-        values.put("name",plant.getName());
-        values.put("url",plant.getUrl());
+        values.put(columns[0],id);
+        values.put(columns[1],plant.getImagePath());
+        values.put(columns[2],plant.getName());
+        values.put(columns[3],plant.getUrl());
+        values.put(columns[4],plant.getFabulous());
+        values.put(columns[5],plant.getCollection());
         return writableDatabase.insert(DataBasePlantHelper.TB_NAME, null, values);
     }
 
     public int delete(String id){
         return writableDatabase.delete(DataBasePlantHelper.TB_NAME, "id = ?", new String[]{id});
     }
-
-    public Cursor queryByID(String id){
-        String[] columns = new String[]{"id","imagePath","name","url"};
+    public Cursor queryAll(){
         // 参数为空则为返回所有列
-//        String[] columns = null;
+        String selection = null;
+        String[] selectionArgs = null;
+        String groupBy = null;
+        String having = null;
+        String orderBy = null;
+        return writableDatabase.query(DataBasePlantHelper.TB_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+    }
+    public Cursor queryByID(String id){
+        // 参数为空则为返回所有列
         String selection = "id = ?";
         String[] selectionArgs = new String[]{id};
         String groupBy = null;
@@ -54,7 +68,6 @@ public class DataBaseUtil {
     }
 
     public Cursor queryByName(String name){
-        String[] columns = new String[]{"id","imagePath","name","url"};
         // 参数为空则为返回所有列
 //        String[] columns = null;
         String selection = "name = ?";
@@ -65,13 +78,15 @@ public class DataBaseUtil {
         return writableDatabase.query(DataBasePlantHelper.TB_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
     }
 
-    public void update(String id,ExplorePlantBean.Result plant){
+    public int update(String id,ExplorePlantBean.Result plant){
         ContentValues values = new ContentValues();
-        values.put("id",id);
-        values.put("imagePath",plant.getImagePath());
-        values.put("name",plant.getName());
-        values.put("url",plant.getUrl());
-        writableDatabase.update(DataBasePlantHelper.TB_NAME,values,"id = ?",new String[]{id});
+        values.put(columns[0],id);
+        values.put(columns[1],plant.getImagePath());
+        values.put(columns[2],plant.getName());
+        values.put(columns[3],plant.getUrl());
+        values.put(columns[4],plant.getFabulous());
+        values.put(columns[5],plant.getCollection());
+        return writableDatabase.update(DataBasePlantHelper.TB_NAME,values,"id = ?",new String[]{id});
     }
 
 

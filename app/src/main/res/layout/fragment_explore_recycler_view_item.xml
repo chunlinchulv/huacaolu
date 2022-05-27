@@ -34,5 +34,17 @@
             android:src="@drawable/icon_fabulous_unlike"
             android:layout_alignParentEnd="true"/>
 
+        <ImageView
+            android:id="@+id/iBtn_collection"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="2dp"
+            android:layout_toLeftOf="@id/iBtn_fabulous"
+            android:background="@null"
+            android:src="@drawable/icon_collection_unlike" />
+
     </RelativeLayout>
 </LinearLayout>
