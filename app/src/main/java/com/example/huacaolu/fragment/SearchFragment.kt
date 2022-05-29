@@ -17,9 +17,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.helper.widget.Layer
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import com.baidu.aip.imageclassify.AipImageClassify
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
 import com.example.huacaolu.activity.RealTimeIdentsActivity
@@ -43,7 +43,6 @@ class SearchFragment : Fragment(),
     private var param1: String? = null
     private var param2: String? = null
 
-    private val isNeedCropImage = true
 
     // 拍照识别
     val TAKE_PHOTO = 1
@@ -53,18 +52,15 @@ class SearchFragment : Fragment(),
 
     //在注册表中配置的provider
     val FILE_PROVIDER_AUTHORITY = "com.example.huacaolu.fileProvider"
-    lateinit var mImageUri : Uri
+    lateinit var mImageUri: Uri
     lateinit var mPopupWindow: MyPopupWindow
     lateinit var mIvShowImage: ImageView
-    lateinit var mIvSearch: ImageView
     lateinit var mIvTakePhoto: ImageView
+    private lateinit var mPoetryTextView: TextView
     lateinit var mIvSelectAlbum: ImageView
-    lateinit var mIvSelectScan: ImageView
-    lateinit var mEtSearch: TextView
-
-    lateinit var client: AipImageClassify
+    lateinit var mIvSelectScan: Layer
     lateinit var imageUrl: String
-    lateinit var parsePlantApi : ParsePlant
+    lateinit var parsePlantApi: ParsePlant
     var isParsePlantSuccessByByteArray: Boolean = false
     private var isDestroy: Boolean = false
     private var isPause: Boolean = false
@@ -77,14 +73,14 @@ class SearchFragment : Fragment(),
         }
     }
 
-    private val mHandler:Handler = object : Handler(Looper.getMainLooper()) {
+    private val mHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            when(msg.what){
+            when (msg.what) {
                 HANDLERCROPIMAGE -> {
-                    Log.e(TAG,"Handler what =  ${msg.what} obj = ${msg.obj.toString()}")
+                    Log.e(TAG, "Handler what =  ${msg.what} obj = ${msg.obj.toString()}")
                     imageUrl = msg.obj.toString()
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         showImage(imageUrl)
 //                    parsePlantApi.parsePlantByHttp(imageUrl)
 //                    parsePlantApi.parsePlantByLocalPath(imageUrl)
@@ -95,7 +91,6 @@ class SearchFragment : Fragment(),
             }
         }
     }
-
 
 
     private fun showImage(filePath: String) {
@@ -138,17 +133,14 @@ class SearchFragment : Fragment(),
     }
 
     private fun initView(view: View) {
-        mIvSearch = view.findViewById<ImageView>(R.id.search_button)
-        mIvTakePhoto = view.findViewById<ImageView>(R.id.search_take_photo)
-        mIvSelectAlbum= view.findViewById<ImageView>(R.id.search_album)
-        mIvSelectScan = view.findViewById<ImageView>(R.id.search_scan)
-        mEtSearch = view.findViewById<TextView>(R.id.search_edit_text)
-        mIvShowImage = view.findViewById<ImageView>(R.id.iv_show_image)
+        val mFindYourPlant = view.findViewById<TextView>(R.id.search_find_text)
+        mIvTakePhoto = view.findViewById(R.id.search_take_photo)
+        mIvSelectAlbum = view.findViewById(R.id.search_album)
+        mIvSelectScan = view.findViewById(R.id.layer)
+        mIvShowImage = view.findViewById(R.id.iv_show_image)
+        mPoetryTextView = view.findViewById(R.id.search_poetry_text)
         mIvShowImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        mIvSearch.setOnClickListener {
-            val intent = Intent(activity,RealTimeIdentsActivity::class.java)
-            startActivity(intent)
-        }
+        val mEtSearch = view.findViewById<TextView>(R.id.search_edit_text)
 
         mIvTakePhoto.setOnClickListener {
             hideKeyBoard()
@@ -160,16 +152,17 @@ class SearchFragment : Fragment(),
         }
         mIvSelectScan.setOnClickListener {
             hideKeyBoard()
-            val intent = Intent(activity,RealTimeIdentsActivity::class.java)
+            val intent = Intent(activity, RealTimeIdentsActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun hideKeyBoard() {
-        val imm :InputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager =
+            requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         val view = activity?.window?.peekDecorView()
         if (view != null) {
-            imm.hideSoftInputFromWindow(view.windowToken,0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -202,7 +195,8 @@ class SearchFragment : Fragment(),
 
     private fun takePhoto() {
         Toast.makeText(requireContext(), "打开相机", Toast.LENGTH_SHORT).show()
-        val outputImage = requireContext().getExternalFilesDir("IMG_" + System.currentTimeMillis() + ".jpg")!!
+        val outputImage =
+            requireContext().getExternalFilesDir("IMG_" + System.currentTimeMillis() + ".jpg")!!
         if (outputImage.exists()) {
             outputImage.delete()
         }
@@ -224,8 +218,8 @@ class SearchFragment : Fragment(),
                 TAKE_PHOTO -> {
                     getImage(mImageUri)
                 }
-                CHOOSE_PHOTO,CROP_IMAGE -> {
-                    Log.e(TAG,"选取图片requestCode =  $requestCode")
+                CHOOSE_PHOTO, CROP_IMAGE -> {
+                    Log.e(TAG, "选取图片requestCode =  $requestCode")
                     getImage(data)
                 }
                 else -> {
@@ -243,9 +237,9 @@ class SearchFragment : Fragment(),
      *  这样的地址在读取数据的时候会造成FileNotFoundException,
      *  所以需要replace掉/root/
      */
-    private fun getImage(imageUri : Uri) {
-        val filePath = imageUri.path.toString().replace("/root/","")
-        Log.e(TAG,"拍照返回的照片 filePath =  $filePath")
+    private fun getImage(imageUri: Uri) {
+        val filePath = imageUri.path.toString().replace("/root/", "")
+        Log.e(TAG, "拍照返回的照片 filePath =  $filePath")
         pictureCropping(filePath)
     }
 
@@ -254,19 +248,20 @@ class SearchFragment : Fragment(),
         val uri = data?.data!!
         uri.apply {
             val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor = requireContext().contentResolver?.query(uri, filePathColumn, null, null, null)
+            val cursor =
+                requireContext().contentResolver?.query(uri, filePathColumn, null, null, null)
             cursor?.moveToFirst()
             val filePath = cursor?.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
             cursor?.close()
-            filePath?.let{pictureCropping(it)}
+            filePath?.let { pictureCropping(it) }
         }
     }
 
     // 对图片进行裁剪
-    private fun pictureCropping(filePath : String?) {
+    private fun pictureCropping(filePath: String?) {
         val result = filePath?.let { getPictureSize(it) }!!
         if (result == -1) {
-            Toast.makeText(requireContext(), "图片选择不符合标准，请重新选择",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "图片选择不符合标准，请重新选择", Toast.LENGTH_SHORT).show()
             return
         }
         // 裁剪是耗时操作，需要在子线程中进行，在裁剪完之后需要使用handler去通知其他需要使用裁剪结果的对象，告知结果可使用了。
@@ -274,26 +269,29 @@ class SearchFragment : Fragment(),
         object : Thread() {
             override fun run() {
                 super.run()
-                val bitmap = Glide.with(requireContext()).asBitmap().load(filePath).submit(result,result).get()
-                val file = requireContext().getExternalFilesDir("IMG_" + System.currentTimeMillis() + ".jpg")!!
+                val bitmap =
+                    Glide.with(requireContext()).asBitmap().load(filePath).submit(result, result)
+                        .get()
+                val file =
+                    requireContext().getExternalFilesDir("IMG_" + System.currentTimeMillis() + ".jpg")!!
                 if (file.exists()) {
                     file.delete()
                 }
                 val outputStream = FileOutputStream(file)
                 try {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,10,outputStream)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStream)
                     outputStream.flush()
                     outputStream.close()
                     if (TextUtils.isEmpty(file.path.toString())) {
-                        Log.e(TAG,"图片裁剪失败，请重新尝试")
+                        Log.e(TAG, "图片裁剪失败，请重新尝试")
                         return
                     }
                     val message = mHandler.obtainMessage()
                     message.what = HANDLERCROPIMAGE
                     message.obj = file.path.toString()
                     mHandler.handleMessage(message)
-                }catch (e : IOException){
-                    Toast.makeText(requireContext(),"图片裁剪失败，请重新尝试",Toast.LENGTH_SHORT).show()
+                } catch (e: IOException) {
+                    Toast.makeText(requireContext(), "图片裁剪失败，请重新尝试", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -309,12 +307,12 @@ class SearchFragment : Fragment(),
         Log.e(TAG, "通过bitmap获取到的图片大小width: $width height: $height")
         return if (width > 4096 && height > 4096) {
             4096
-        }else if (height < 15 || width < 15) {
+        } else if (height < 15 || width < 15) {
             -1
-        }else {
+        } else {
             if (width > height) {
                 height
-            }else {
+            } else {
                 width
             }
         }
@@ -376,7 +374,7 @@ class SearchFragment : Fragment(),
             isParsePlantSuccessByByteArray = false
             return
         }
-        if (results[0]?.baike_info == null || TextUtils.equals("非植物",results[0]?.name)) {
+        if (results[0]?.baike_info == null || TextUtils.equals("非植物", results[0]?.name)) {
             if (!TextUtils.isEmpty(imagePath)) {
                 Toast.makeText(requireContext(), "${results[0]?.name} 请重试 ", Toast.LENGTH_SHORT)
                     .show()
@@ -387,36 +385,45 @@ class SearchFragment : Fragment(),
         if (byteArray != null) {
             isParsePlantSuccessByByteArray = true
         }
-        val dataSearchImagePlantBean : SearchImagePlantBean = SearchImagePlantBean()
-        val resultArrayList : ArrayList<SearchImagePlantBean.ResultDTO?> = arrayListOf<SearchImagePlantBean.ResultDTO?>()
-        for (data : SearchImagePlantBean.ResultDTO? in results) {
-            if (data?.score!! > 0.05 ) {
+        val dataSearchImagePlantBean: SearchImagePlantBean = SearchImagePlantBean()
+        val resultArrayList: ArrayList<SearchImagePlantBean.ResultDTO?> =
+            arrayListOf<SearchImagePlantBean.ResultDTO?>()
+        for (data: SearchImagePlantBean.ResultDTO? in results) {
+            if (data?.score!! > 0.05) {
                 resultArrayList.add(data)
             }
         }
         dataSearchImagePlantBean.setLog_id(plantBean.getLog_id())
         dataSearchImagePlantBean.setResult(resultArrayList)
         if (resultArrayList.size == 1) {
-            startActivityDetails(resultArrayList[0]!!,imagePath,byteArray)
-        }else if (resultArrayList.size > 1){
-            startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean),imagePath,byteArray)
-        }else {
+            startActivityDetails(resultArrayList[0]!!, imagePath, byteArray)
+        } else if (resultArrayList.size > 1) {
+            startSearchResultActivity(Gson().toJson(dataSearchImagePlantBean), imagePath, byteArray)
+        } else {
 
             Toast.makeText(requireContext(), "没有数据", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun startActivityDetails(resultDTO: SearchImagePlantBean.ResultDTO, imagePath: String?,byteArray: ByteArray?) {
+    private fun startActivityDetails(
+        resultDTO: SearchImagePlantBean.ResultDTO,
+        imagePath: String?,
+        byteArray: ByteArray?
+    ) {
         Log.e(TAG, "startActivityDetails: $imagePath")
         val intent = Intent(requireContext(), SearchResultDetails::class.java)
-        intent.putExtra("jsonString",Gson().toJson(resultDTO))
+        intent.putExtra("jsonString", Gson().toJson(resultDTO))
         startActivity(intent)
     }
 
-    private fun startSearchResultActivity(jsonString: String,imagePath: String?,byteArray: ByteArray?) {
+    private fun startSearchResultActivity(
+        jsonString: String,
+        imagePath: String?,
+        byteArray: ByteArray?
+    ) {
         Log.e(TAG, "startSearchResultActivity:")
         val intent = Intent(requireContext(), SearchResultActivity::class.java)
-        intent.putExtra("jsonString",jsonString)
+        intent.putExtra("jsonString", jsonString)
         startActivity(intent)
     }
 
@@ -424,7 +431,7 @@ class SearchFragment : Fragment(),
         Log.e(TAG, "onActivityResult: parsePlantSuccess = $string")
         // Toast需要在主线程弹
         Handler(Looper.getMainLooper()).post {
-            getResult(string,imagePath, ByteArray(0))
+            getResult(string, imagePath, ByteArray(0))
         }
     }
 
@@ -432,7 +439,7 @@ class SearchFragment : Fragment(),
         Log.e(TAG, "parsePlantSuccess = $string")
 
         Handler(Looper.getMainLooper()).post {
-            getResult(string,"",byteArray)
+            getResult(string, "", byteArray)
         }
     }
 
