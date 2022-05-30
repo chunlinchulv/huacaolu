@@ -64,6 +64,7 @@ class ExploreFragment : Fragment(), StaggeredGridAdapter.OnItemClickListener {
     }
 
     private fun initData() {
+        Log.e("initData","initData")
         val result : MutableList<ExplorePlantBean.Result> = getData()
         mRecyclerView?.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)

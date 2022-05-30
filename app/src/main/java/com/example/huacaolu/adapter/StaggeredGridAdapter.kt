@@ -47,33 +47,22 @@ class StaggeredGridAdapter(
         // TODO 数据库查询操作
         var isLike = false
         var isColl = false
-        val urlBase64String = Base64Util.encodeString(resultList[position].url)
-        val cursor = DataBaseUtil.getInstance().queryByID(urlBase64String)
-        if (cursor.moveToFirst()){
-            do {
-                val fabulous = cursor.getInt(cursor.getColumnIndex(DataBasePlantHelper.FABULOUS))
-                isLike = if (fabulous == 0) {
-                    holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
-                    false
-                }else{
-                    holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_like)
-                    true
-                }
-                val collection = cursor.getInt(cursor.getColumnIndex(DataBasePlantHelper.COLLECTION))
-                isColl = if (collection == 0) {
-                    holder.mPlantColl.setImageResource(R.drawable.icon_collection_unlike)
-                    false
-                }else{
-                    holder.mPlantColl.setImageResource(R.drawable.icon_collection_islike)
-                    true
-                }
-            }while (cursor.moveToNext())
+        val fabulous = resultList[position].fabulous
+        isLike = if (fabulous == 0) {
+            holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
+            false
         }else{
-            isLike = false
-            isColl = false
+            holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_like)
+            true
         }
-
-        cursor.close()
+        val collection = resultList[position].collection
+        isColl = if (collection == 0) {
+            holder.mPlantColl.setImageResource(R.drawable.icon_collection_unlike)
+            false
+        }else{
+            holder.mPlantColl.setImageResource(R.drawable.icon_collection_islike)
+            true
+        }
 
         holder.mPlantLike.setOnClickListener(View.OnClickListener {
             isLike = if (isLike) {
