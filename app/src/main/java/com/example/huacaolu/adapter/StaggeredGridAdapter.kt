@@ -15,9 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.huacaolu.R
 import com.example.huacaolu.bean.ExplorePlantBean
-import com.example.huacaolu.helper.DataBasePlantHelper
-import com.example.huacaolu.utils.Base64Util
-import com.example.huacaolu.utils.DataBaseUtil
 
 
 class StaggeredGridAdapter(
@@ -45,41 +42,22 @@ class StaggeredGridAdapter(
             listener.clickImage(resultList[position].url)
         })
         // TODO 数据库查询操作
-        var isLike = false
         var isColl = false
         val fabulous = resultList[position].fabulous
-        isLike = if (fabulous == 0) {
-            holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
-            false
-        }else{
-            holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_like)
-            true
-        }
         val collection = resultList[position].collection
         isColl = if (collection == 0) {
-            holder.mPlantColl.setImageResource(R.drawable.icon_collection_unlike)
+            holder.mPlantColl.setImageResource(R.drawable.icon_fabulous_unlike)
             false
-        }else{
+        } else {
             holder.mPlantColl.setImageResource(R.drawable.icon_collection_islike)
             true
         }
 
-        holder.mPlantLike.setOnClickListener(View.OnClickListener {
-            isLike = if (isLike) {
-                holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_unlike)
-                false
-            }else {
-                holder.mPlantLike.setImageResource(R.drawable.icon_fabulous_like)
-                true
-            }
-            listener.clickLike(resultList[position])
-
-        })
         holder.mPlantColl.setOnClickListener(View.OnClickListener {
             isColl = if (isColl) {
-                holder.mPlantColl.setImageResource(R.drawable.icon_collection_unlike)
+                holder.mPlantColl.setImageResource(R.drawable.icon_fabulous_unlike)
                 false
-            }else {
+            } else {
                 holder.mPlantColl.setImageResource(R.drawable.icon_collection_islike)
                 true
             }
@@ -97,17 +75,16 @@ class StaggeredGridAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val mPlantImage: ImageView = itemView.findViewById<View>(R.id.iv_plant_image) as ImageView
         val mPlantName: TextView = itemView.findViewById<View>(R.id.tv_plant_name) as TextView
-        val mPlantLike: ImageView = itemView.findViewById<View>(R.id.iBtn_fabulous) as ImageView
         val mPlantColl: ImageView = itemView.findViewById<View>(R.id.iBtn_collection) as ImageView
     }
 
     interface OnItemClickListener {
-        fun clickImage(url : String)
-        fun clickLike(explorePlantBean : ExplorePlantBean.Result)
-        fun clickColl(explorePlantBean : ExplorePlantBean.Result)
+        fun clickImage(url: String)
+        fun clickLike(explorePlantBean: ExplorePlantBean.Result)
+        fun clickColl(explorePlantBean: ExplorePlantBean.Result)
     }
 
-    fun setOnItemClickListener (listener : OnItemClickListener){
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
 }
